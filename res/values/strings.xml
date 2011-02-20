@@ -3,6 +3,15 @@
     <string name="app_name">ToDo</string>
     
     <!-- ToDoList -->
-    <string name="new_task">New task</string>
+    <string name="new_task">New ToDo</string>
     <string name="remove_completed">Remove completed</string>
+    <string name="edit_todo">Edit</string>
+    <string name="delete_todo">Delete</string>
+    
+    <!-- New/Edit -->
+    <string name="new_edit_todo">Add/Edit ToDo</string>
+    <string name="todo">ToDo:</string>
+    <string name="save">Save</string>
+    <string name="cancel">Cancel</string>
+    <string name="name_cannot_be_empty">The name of the ToDo cannot be empty!</string>
 </resources>

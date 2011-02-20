@@ -2,10 +2,10 @@ package dime.android.todo.logic;
 
 public class Task
 {
-	private int			id;
-	private String		name;
-	private int			priority;
-	private boolean	completed;
+	private int					id;
+	private String				name;
+	private int					priority;
+	private boolean			completed;
 
 
 	public Task (int id, String name, int priority, boolean completed)

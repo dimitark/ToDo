@@ -12,7 +12,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class DatabaseHelper extends SQLiteOpenHelper
 {
 	private static final int		DATABASE_VERSION	= 1;
-	private static final String	DATABASE_NAME		= "todoDB";
+	private static final String	DATABASE_NAME		= "todo.db";
 
 	private static final String	TABLE_NAME			= "todo";
 
@@ -29,7 +29,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
 	private static final String	DELETE_COMPLETED	= "DELETE FROM " + TABLE_NAME + " WHERE " + _COMPLETED
 																			+ " = 1;";
 	private static final String	DELETE_TASK			= "DELETE FROM " + TABLE_NAME + " WHERE " + _ID + " = ?;";
-	private static final String	UPDATE_TASK			= "UPDATE " + TABLE_NAME + " SET " + _NAME + " = ?;";
+	private static final String	UPDATE_TASK			= "UPDATE " + TABLE_NAME + " SET " + _NAME + " = ?, "+ _COMPLETED + " = ? WHERE id = ?;";
 	private static final String	INSERT_TASK			= "INSERT INTO " + TABLE_NAME + " (" + _NAME + ","
 																			+ _PRIORITY + "," + _COMPLETED
 																			+ ") VALUES (?, ?, ?);";
@@ -74,7 +74,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
 	 */
 	public void updateTask (Task task)
 	{
-		String bindArgs[] = {task.getName ( )};
+		String bindArgs[] = {task.getName ( ), (task.isCompleted ( ) ? "1" : "0"), task.getId ( ) + ""};
 		getWritableDatabase ( ).execSQL (UPDATE_TASK, bindArgs);
 	}
 
@@ -118,6 +118,8 @@ public class DatabaseHelper extends SQLiteOpenHelper
 
 			} while (cursor.moveToNext ( ));
 		}
+		
+		cursor.close ( );
 
 		return allTasks;
 	}
