@@ -41,6 +41,7 @@ public class NewEditToDo extends Activity implements OnClickListener
 		if (task != null)
 		{
 			txtName.setText (task.getName ( ));
+			txtName.setSelection (txtName.getText ( ).toString ( ).length ( ));
 		}
 	}
 
