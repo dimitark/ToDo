@@ -14,23 +14,31 @@ import android.widget.TextView;
 
 public class TaskListAdapter extends BaseAdapter
 {
-	private ToDo				toDoApp;
-	private LayoutInflater	mInflater;
-	private Context			context;
+	private static final int	colors[]	= {R.color.low_priority, R.color.normal_priority, R.color.high_priority};
+
+	private ToDo					toDoApp;
+	private LayoutInflater		mInflater;
+	private Context				context;
+
+
+	private void setPriorityColor (ViewHolder holder, int priority)
+	{
+		holder.priorityColor.setBackgroundResource (colors[priority]);
+	}
 
 
 	private void changeItemStyle (ViewHolder holder, Task task)
 	{
 		if (task.isCompleted ( ))
 		{
-			holder.icon.setImageDrawable (context.getResources ( ).getDrawable (R.drawable.tick));
+			holder.icon.setImageDrawable (context.getResources ( ).getDrawable (R.drawable.btn_check_on));
 			holder.task_name.setPaintFlags (holder.task_name.getPaintFlags ( ) | Paint.STRIKE_THRU_TEXT_FLAG);
 			holder.task_name.setTextColor (context.getResources ( ).getColor (R.color.gray));
 			holder.list_item_layout.setBackgroundResource (R.color.gray_transparent);
 		}
 		else
 		{
-			holder.icon.setImageDrawable (context.getResources ( ).getDrawable (R.drawable.alert));
+			holder.icon.setImageDrawable (context.getResources ( ).getDrawable (R.drawable.btn_check_off));
 			holder.task_name.setPaintFlags (holder.task_name.getPaintFlags ( ) & ~Paint.STRIKE_THRU_TEXT_FLAG);
 			holder.task_name.setTextColor (context.getResources ( ).getColor (R.color.white));
 			holder.list_item_layout.setBackgroundResource (R.color.transparent);
@@ -76,6 +84,7 @@ public class TaskListAdapter extends BaseAdapter
 			holder.list_item_layout = (LinearLayout) convertView.findViewById (R.id.list_item_layout);
 			holder.icon = (ImageView) convertView.findViewById (R.id.task_check_icon);
 			holder.task_name = (TextView) convertView.findViewById (R.id.task_name);
+			holder.priorityColor = (TextView) convertView.findViewById (R.id.priority_color);
 
 			convertView.setTag (holder);
 		}
@@ -93,6 +102,9 @@ public class TaskListAdapter extends BaseAdapter
 		// Change the icon and the text style based on the "completed" info
 		changeItemStyle (holder, task);
 
+		// Set the correct color (set priority)
+		setPriorityColor (holder, task.getPriority ( ));
+
 		return convertView;
 	}
 
@@ -104,6 +116,7 @@ public class TaskListAdapter extends BaseAdapter
 		LinearLayout	list_item_layout;
 		ImageView		icon;
 		TextView			task_name;
+		TextView			priorityColor;
 	}
 
 }

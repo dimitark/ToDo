@@ -1,7 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <resources>
+
+	<!-- Main colors -->
+	<color name="dark_blue">#003753</color>
+	<color name="light_blue">#002233</color>
+	<color name="pressed_blue">#004b72</color>
+	<color name="pressed_blue_alpha">#70004b72</color>
+	<color name="very_light_blue">#489fdc</color>
+
 	<color name="white">#FFFFFF</color>
 	<color name="gray">#c9c9c9</color>
 	<color name="gray_transparent">#70585858</color>
 	<color name="transparent">#00000000</color>
+
+	<!-- Priorities -->
+	<color name="high_priority">#f40000</color>
+	<color name="normal_priority">#f48300</color>
+	<color name="low_priority">#f4ec00</color>
+
+	<!-- Style colors -->
+	<color name="black">#000000</color>
 </resources>

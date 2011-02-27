@@ -29,7 +29,9 @@ public class DatabaseHelper extends SQLiteOpenHelper
 	private static final String	DELETE_COMPLETED	= "DELETE FROM " + TABLE_NAME + " WHERE " + _COMPLETED
 																			+ " = 1;";
 	private static final String	DELETE_TASK			= "DELETE FROM " + TABLE_NAME + " WHERE " + _ID + " = ?;";
-	private static final String	UPDATE_TASK			= "UPDATE " + TABLE_NAME + " SET " + _NAME + " = ?, "+ _COMPLETED + " = ? WHERE id = ?;";
+	private static final String	UPDATE_TASK			= "UPDATE " + TABLE_NAME + " SET " + _NAME + " = ?, "
+																			+ _PRIORITY + " = ?, " + _COMPLETED
+																			+ " = ? WHERE id = ?;";
 	private static final String	INSERT_TASK			= "INSERT INTO " + TABLE_NAME + " (" + _NAME + ","
 																			+ _PRIORITY + "," + _COMPLETED
 																			+ ") VALUES (?, ?, ?);";
@@ -62,7 +64,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
 	 */
 	public void addTask (Task task)
 	{
-		String bindArgs[] = {task.getName ( ), "0", (task.isCompleted ( ) ? "1" : "0")};
+		String bindArgs[] = {task.getName ( ), task.getPriority ( ) + "", (task.isCompleted ( ) ? "1" : "0")};
 		getWritableDatabase ( ).execSQL (INSERT_TASK, bindArgs);
 	}
 
@@ -74,7 +76,8 @@ public class DatabaseHelper extends SQLiteOpenHelper
 	 */
 	public void updateTask (Task task)
 	{
-		String bindArgs[] = {task.getName ( ), (task.isCompleted ( ) ? "1" : "0"), task.getId ( ) + ""};
+		String bindArgs[] = {task.getName ( ), task.getPriority ( ) + "", (task.isCompleted ( ) ? "1" : "0"),
+				task.getId ( ) + ""};
 		getWritableDatabase ( ).execSQL (UPDATE_TASK, bindArgs);
 	}
 
@@ -99,26 +102,28 @@ public class DatabaseHelper extends SQLiteOpenHelper
 		List<Task> allTasks = new ArrayList<Task> ( );
 
 		SQLiteDatabase db = this.getReadableDatabase ( );
-		Cursor cursor = db.query (TABLE_NAME, null, null, null, null, null, _COMPLETED + " ASC");
+		Cursor cursor = db.query (TABLE_NAME, null, null, null, null, null, _COMPLETED + " ASC, " + _PRIORITY
+				+ " DESC");
 
 		if (cursor.moveToFirst ( ))
 		{
 			int _id_index = cursor.getColumnIndex (_ID);
 			int _name_index = cursor.getColumnIndex (_NAME);
-			// int _priority_index = cursor.getColumnIndex (_PRIORITY);
+			int _priority_index = cursor.getColumnIndex (_PRIORITY);
 			int _completed_index = cursor.getColumnIndex (_COMPLETED);
 
 			do
 			{
 				int id = cursor.getInt (_id_index);
 				String name = cursor.getString (_name_index);
+				int priority = cursor.getInt (_priority_index);
 				boolean completed = (cursor.getInt (_completed_index) == 0 ? false : true);
 
-				allTasks.add (new Task (id, name, 0, completed));
+				allTasks.add (new Task (id, name, priority, completed));
 
 			} while (cursor.moveToNext ( ));
 		}
-		
+
 		cursor.close ( );
 
 		return allTasks;

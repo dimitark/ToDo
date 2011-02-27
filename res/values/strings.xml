@@ -11,6 +11,7 @@
     <!-- New/Edit -->
     <string name="new_edit_todo">Add/Edit ToDo</string>
     <string name="todo">ToDo:</string>
+    <string name="priority">Priority:</string>
     <string name="save">Save</string>
     <string name="cancel">Cancel</string>
     <string name="name_cannot_be_empty">The name of the ToDo cannot be empty!</string>

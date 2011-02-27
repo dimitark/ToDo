@@ -2,6 +2,10 @@ package dime.android.todo.logic;
 
 public class Task
 {
+	public static final int	PRIORITY_LOW		= 0;
+	public static final int	PRIORITY_NORMAL	= 1;
+	public static final int	PRIORITY_HIGH		= 2;
+
 	private int					id;
 	private String				name;
 	private int					priority;

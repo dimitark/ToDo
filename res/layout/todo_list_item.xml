@@ -10,9 +10,12 @@
 		android:maxHeight="45dip" android:scaleType="centerInside"
 		android:adjustViewBounds="true" />
 
-	<TextView android:id="@+id/task_name" android:layout_width="fill_parent"
+	<TextView android:id="@+id/task_name" android:layout_width="wrap_content"
 		android:layout_height="fill_parent" android:layout_weight="1"
 		android:gravity="center_vertical" android:textColor="@color/white"
 		android:textSize="18dip" />
+
+	<TextView android:id="@+id/priority_color"
+		android:layout_height="fill_parent" android:layout_width="5dip" />
 
 </LinearLayout>
