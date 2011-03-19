@@ -38,5 +38,9 @@
 		<item name="android:paddingTop">15dip</item>
 		<item name="android:paddingBottom">15dip</item>
 	</style>
+	
+	<style name="WidgetBackground">
+        <item name="android:background">@drawable/widget_background</item>
+    </style>
 
 </resources>

@@ -128,6 +128,37 @@ public class DatabaseHelper extends SQLiteOpenHelper
 
 		return allTasks;
 	}
+	
+	
+	
+	public List<Task> getUncompletedTasks ()
+	{
+		List<Task> uncompletedTasks = new ArrayList<Task> ( );
+		
+		SQLiteDatabase db = this.getReadableDatabase ( );
+		Cursor cursor = db.query (TABLE_NAME, null, _COMPLETED + " = 0", null, null, null, _PRIORITY + " DESC");
+
+		if (cursor.moveToFirst ( ))
+		{
+			int _id_index = cursor.getColumnIndex (_ID);
+			int _name_index = cursor.getColumnIndex (_NAME);
+			int _priority_index = cursor.getColumnIndex (_PRIORITY);
+
+			do
+			{
+				int id = cursor.getInt (_id_index);
+				String name = cursor.getString (_name_index);
+				int priority = cursor.getInt (_priority_index);
+
+				uncompletedTasks.add (new Task (id, name, priority, false));
+
+			} while (cursor.moveToNext ( ));
+		}
+
+		cursor.close ( );
+		
+		return uncompletedTasks;
+	}
 
 
 	/**

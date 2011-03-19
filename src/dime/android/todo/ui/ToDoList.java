@@ -68,6 +68,28 @@ public class ToDoList extends Activity implements OnClickListener, OnItemClickLi
 			listAdapter.notifyDataSetChanged ( );
 		}
 	}
+	
+	@Override
+	public void onPause ( )
+	{
+		super.onPause ( );
+		toDoApp.dbHelper.close ( );
+	}
+	
+	@Override
+	public void onStop ( )
+	{
+		super.onStop ( );
+		toDoApp.dbHelper.close ( );
+	}
+	
+	
+	@Override 
+	public void onDestroy ( )
+	{
+		super.onDestroy ( );
+		toDoApp.dbHelper.close ( );
+	}
 
 
 	@Override

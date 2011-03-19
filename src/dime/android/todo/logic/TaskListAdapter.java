@@ -14,7 +14,7 @@ import android.widget.TextView;
 
 public class TaskListAdapter extends BaseAdapter
 {
-	private static final int	colors[]	= {R.color.low_priority, R.color.normal_priority, R.color.high_priority};
+	public static final int	colors[]	= {R.color.low_priority, R.color.normal_priority, R.color.high_priority};
 
 	private ToDo					toDoApp;
 	private LayoutInflater		mInflater;

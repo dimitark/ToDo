@@ -4,17 +4,19 @@ import java.util.List;
 
 import dime.android.todo.db.DatabaseHelper;
 import dime.android.todo.logic.Task;
+import dime.android.todo.widget.ToDoWidgetService;
 import android.app.Application;
+import android.content.Intent;
 import android.content.res.Configuration;
 
 public class ToDo extends Application
 {
 
-	public DatabaseHelper	dbHelper;
-	public List<Task>			taskList;
+	public DatabaseHelper dbHelper;
+	public List<Task> taskList;
 
-	private boolean			isDataValid;
-	private Task				taskToEdit;
+	private boolean isDataValid;
+	private Task taskToEdit;
 
 
 	@Override
@@ -53,6 +55,11 @@ public class ToDo extends Application
 	{
 		taskList = dbHelper.getAllTasks ( );
 		isDataValid = true;
+
+		/*
+		 * Update the widget.
+		 */
+		startService (new Intent (this.getApplicationContext ( ), ToDoWidgetService.class));
 	}
 
 
