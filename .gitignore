@@ -4,3 +4,5 @@ gen/*
 /bin
 /assets
 /gen
+.DS_Store
+
