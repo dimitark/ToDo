@@ -3,5 +3,8 @@
 
 	<item android:id="@+id/remove_completed" android:title="@string/remove_completed"
 		android:icon="@drawable/delete" />
+		
+	<item android:id="@+id/settings" android:icon="@drawable/settings"
+		android:title="@string/settings" />
 
 </menu>

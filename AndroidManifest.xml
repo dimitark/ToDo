@@ -17,6 +17,8 @@
 				<category android:name="android.intent.category.LAUNCHER" />
 			</intent-filter>
 		</activity>
+		
+		<activity android:name=".ui.Preferences"></activity>
 
 		<activity android:name=".ui.NewEditToDo" android:label="@string/new_edit_todo"
 			android:theme="@style/MyTheme" android:windowSoftInputMode="stateVisible|adjustResize" />

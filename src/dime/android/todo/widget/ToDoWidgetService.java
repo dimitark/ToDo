@@ -12,7 +12,9 @@ import android.appwidget.AppWidgetManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.IBinder;
+import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.RemoteViews;
 
@@ -84,6 +86,20 @@ public class ToDoWidgetService extends Service
 			updateViews.setTextViewText (task_names[i], "");
 			clearColor(updateViews, i);
 		}
+		
+		SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
+		boolean transparent = settings.getBoolean("widgetTransparentBackground", false);
+		if (transparent)
+			updateViews.setInt(R.id.widget_layout, "setBackgroundResource", 0);
+		else
+			updateViews.setInt(R.id.widget_layout, "setBackgroundResource", R.drawable.widget_background);
+		
+		// Hide/Show the title
+		boolean hideTitle = settings.getBoolean("widgetHideTitle", false);
+		if (hideTitle)
+			updateViews.setViewVisibility(R.id.widget_title_layout, View.GONE);
+		else
+			updateViews.setViewVisibility(R.id.widget_title_layout, View.VISIBLE);
 		
 		return updateViews;
 	}

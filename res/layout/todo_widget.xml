@@ -8,7 +8,8 @@
 					style="@style/WidgetBackground"
 					android:orientation="vertical">
 					
-	<LinearLayout 	android:layout_width="fill_parent" 
+	<LinearLayout 	android:id="@+id/widget_title_layout"
+					android:layout_width="fill_parent" 
 					android:layout_height="wrap_content"
 					android:orientation="vertical"
 					android:layout_marginBottom="5dip">

@@ -33,6 +33,12 @@ public class ToDoList extends Activity implements OnClickListener, OnItemClickLi
 		toDoApp.dbHelper.deleteCompleted ( );
 		refreshUI ( );
 	}
+	
+	private void openPreferencesActivity()
+	{
+		Intent intent = new Intent(this, Preferences.class);
+		startActivityForResult(intent, 0);
+	}
 
 
 	/** Called when the activity is first created. */
@@ -108,6 +114,9 @@ public class ToDoList extends Activity implements OnClickListener, OnItemClickLi
 		{
 			case R.id.remove_completed:
 				removeCompleted ( );
+				return true;
+			case R.id.settings:
+				openPreferencesActivity();
 				return true;
 			default:
 				return super.onOptionsItemSelected (item);
