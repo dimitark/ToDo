@@ -15,7 +15,7 @@
 		<item name="android:padding">10dip</item>
 	</style>
 
-	<style name="WindowTitleBackground" parent="@android:style/WindowTitleBackground">
+	<style name="WindowTitleBackground" parent="@*android:style/WindowTitleBackground">
 		<item name="android:background">@color/black</item>
 	</style>
 
