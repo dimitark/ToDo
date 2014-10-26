@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <item android:id="@+id/new_todo" android:icon="@drawable/ic_action_new"
+        android:title="@string/new_task" android:showAsAction="ifRoom"/>
+
 	<item android:id="@+id/remove_completed" android:title="@string/remove_completed"
-		android:icon="@drawable/delete" android:showAsAction="ifRoom" />
+		android:icon="@drawable/ic_action_remove" android:showAsAction="ifRoom"/>
 		
-	<item android:id="@+id/settings" android:icon="@drawable/settings"
+	<item android:id="@+id/settings" android:icon="@drawable/ic_action_settings"
 		android:title="@string/settings" android:showAsAction="ifRoom"/>
 
 </menu>

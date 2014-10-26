@@ -15,7 +15,6 @@ import android.widget.ToggleButton;
 public class NewEditToDo extends Activity implements OnClickListener
 {
 	private Button				saveBtn;
-	private Button				cancelBtn;
 
 	private EditText			txtName;
 
@@ -32,8 +31,6 @@ public class NewEditToDo extends Activity implements OnClickListener
 		setContentView (R.layout.edit_todo);
 
 		saveBtn = (Button) findViewById (R.id.btn_save);
-		cancelBtn = (Button) findViewById (R.id.btn_cancel);
-
 		txtName = (EditText) findViewById (R.id.txt_name);
 
 		priorityButtons = new ToggleButton[3];
@@ -42,7 +39,6 @@ public class NewEditToDo extends Activity implements OnClickListener
 		priorityButtons[Task.PRIORITY_HIGH] = (ToggleButton) findViewById (R.id.btn_high_priority);
 
 		saveBtn.setOnClickListener (this);
-		cancelBtn.setOnClickListener (this);
 
 		priorityButtons[Task.PRIORITY_LOW].setOnClickListener (this);
 		priorityButtons[Task.PRIORITY_NORMAL].setOnClickListener (this);
@@ -103,11 +99,7 @@ public class NewEditToDo extends Activity implements OnClickListener
 
 	public void onClick (View v)
 	{
-		if (v == cancelBtn)
-		{
-			finish ( );
-		}
-		else if (v == saveBtn)
+		if (v == saveBtn)
 		{
 			if (task == null)
 			{

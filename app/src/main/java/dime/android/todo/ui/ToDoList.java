@@ -4,6 +4,8 @@ import dime.android.todo.ToDo;
 import dime.android.todo.R;
 import dime.android.todo.logic.Task;
 import dime.android.todo.logic.TaskListAdapter;
+
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,6 +16,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -25,7 +28,8 @@ public class ToDoList extends Activity implements OnClickListener, OnItemClickLi
 	private ToDo				toDoApp;
 	private ListView			taskList;
 	private TaskListAdapter	listAdapter;
-	private LinearLayout		newTaskLayout;
+
+    private ActionBar actionBar;
 
 
 	private void removeCompleted ( )
@@ -56,10 +60,10 @@ public class ToDoList extends Activity implements OnClickListener, OnItemClickLi
 		taskList.setAdapter (listAdapter);
 		taskList.setOnItemClickListener (this);
 
-		registerForContextMenu (taskList);
+        actionBar = getActionBar();
+        actionBar.setHomeButtonEnabled(true);
 
-		newTaskLayout = (LinearLayout) findViewById (R.id.new_task_layout);
-		newTaskLayout.setOnClickListener (this);
+		registerForContextMenu (taskList);
 	}
 
 
@@ -112,6 +116,10 @@ public class ToDoList extends Activity implements OnClickListener, OnItemClickLi
 	{
 		switch (item.getItemId ( ))
 		{
+            case R.id.new_todo:
+                toDoApp.setTaskToEdit (null);
+                showNewEditTodo ( );
+                return true;
 			case R.id.remove_completed:
 				removeCompleted ( );
 				return true;
@@ -192,18 +200,16 @@ public class ToDoList extends Activity implements OnClickListener, OnItemClickLi
 
 	public void onClick (View v)
 	{
-		if (v == newTaskLayout)
-		{
-			toDoApp.setTaskToEdit (null);
-			showNewEditTodo ( );
-		}
 	}
 
 
 	public void onItemClick (AdapterView<?> parentView, View childView, int position, long id)
 	{
-		Task task = toDoApp.taskList.get (position);
-		toggleCompleted (task);
+        /* On click - open the task in edit mode */
+        editTask(position);
+
+//		Task task = toDoApp.taskList.get (position);
+//		toggleCompleted (task);
 	}
 
 }
