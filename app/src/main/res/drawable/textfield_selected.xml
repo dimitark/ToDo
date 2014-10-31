@@ -2,34 +2,43 @@
 
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
 
-	<item android:right="3dip" android:left="3dip" android:bottom="3dip"
-		android:top="3dip">
+    <item
+        android:right="3dip"
+        android:left="3dip"
+        android:bottom="3dip"
+        android:top="3dip">
 
-		<shape android:shape="rectangle">
+        <shape android:shape="rectangle">
 
-			<gradient android:startColor="@color/very_light_blue"
-				android:endColor="@color/very_light_blue" android:angle="90" />
+            <gradient
+                android:startColor="@color/very_light_blue"
+                android:endColor="@color/very_light_blue"
+                android:angle="90" />
 
-			<corners android:radius="7dp" />
+            <corners android:radius="7dp" />
 
-		</shape>
+        </shape>
 
-	</item>
+    </item>
 
-	<item android:right="7dip" android:left="7dip" android:bottom="7dip"
-		android:top="7dip">
+    <item
+        android:right="7dip"
+        android:left="7dip"
+        android:bottom="7dip"
+        android:top="7dip">
 
-		<shape android:shape="rectangle">
+        <shape android:shape="rectangle">
 
-			<gradient android:startColor="@color/white"
-				android:endColor="@color/white" android:angle="90" />
+            <gradient
+                android:startColor="@color/white"
+                android:endColor="@color/white"
+                android:angle="90" />
 
-			<corners android:radius="4dp" />
+            <corners android:radius="4dp" />
 
-		</shape>
+        </shape>
 
-	</item>
-
+    </item>
 
 
 </layer-list>

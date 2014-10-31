@@ -1,122 +1,103 @@
 package dime.android.todo.logic;
 
-import dime.android.todo.R;
-import dime.android.todo.ToDo;
 import android.content.Context;
 import android.graphics.Paint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-public class TaskListAdapter extends BaseAdapter
-{
-	public static final int	colors[]	= {R.color.low_priority, R.color.normal_priority, R.color.high_priority};
+import dime.android.todo.R;
+import dime.android.todo.ToDo;
 
-	private ToDo					toDoApp;
-	private LayoutInflater		mInflater;
-	private Context				context;
+public class TaskListAdapter extends BaseAdapter {
+    public static final int colors[] = {R.color.low_priority, R.color.normal_priority, R.color.high_priority};
 
-
-	private void setPriorityColor (ViewHolder holder, int priority)
-	{
-		holder.priorityColor.setBackgroundResource (colors[priority]);
-	}
+    private ToDo toDoApp;
+    private LayoutInflater mInflater;
+    private Context context;
 
 
-	private void changeItemStyle (ViewHolder holder, Task task)
-	{
-		if (task.isCompleted ( ))
-		{
-			holder.icon.setImageDrawable (context.getResources ( ).getDrawable (R.drawable.btn_check_on));
-			holder.task_name.setPaintFlags (holder.task_name.getPaintFlags ( ) | Paint.STRIKE_THRU_TEXT_FLAG);
-			holder.task_name.setTextColor (context.getResources ( ).getColor (R.color.gray));
-			holder.list_item_layout.setBackgroundResource (R.color.gray_transparent);
-		}
-		else
-		{
-			holder.icon.setImageDrawable (context.getResources ( ).getDrawable (R.drawable.btn_check_off));
-			holder.task_name.setPaintFlags (holder.task_name.getPaintFlags ( ) & ~Paint.STRIKE_THRU_TEXT_FLAG);
-			holder.task_name.setTextColor (context.getResources ( ).getColor (R.color.white));
-			holder.list_item_layout.setBackgroundResource (R.color.transparent);
-		}
-	}
+    private void setPriorityColor(ViewHolder holder, int priority) {
+        holder.priorityColor.setBackgroundResource(colors[priority]);
+    }
 
 
-	public TaskListAdapter (Context context)
-	{
-		this.context = context;
-		toDoApp = (ToDo) context.getApplicationContext ( );
-		mInflater = LayoutInflater.from (context);
-	}
+    private void changeItemStyle(ViewHolder holder, Task task) {
+        if (task.isCompleted()) {
+            holder.task_name.setPaintFlags(holder.task_name.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+            holder.task_name.setTextColor(context.getResources().getColor(R.color.gray));
+            holder.list_item_layout.setBackgroundResource(R.color.gray_transparent);
+        } else {
+            holder.task_name.setPaintFlags(holder.task_name.getPaintFlags() & ~Paint.STRIKE_THRU_TEXT_FLAG);
+            holder.task_name.setTextColor(context.getResources().getColor(R.color.white));
+            holder.list_item_layout.setBackgroundResource(R.color.transparent);
+        }
+    }
 
 
-	public int getCount ( )
-	{
-		return toDoApp.taskList.size ( );
-	}
+    public TaskListAdapter(Context context) {
+        this.context = context;
+        toDoApp = (ToDo) context.getApplicationContext();
+        mInflater = LayoutInflater.from(context);
+    }
 
 
-	public Object getItem (int position)
-	{
-		return toDoApp.taskList.get (position);
-	}
+    public int getCount() {
+        return toDoApp.taskList.size();
+    }
 
 
-	public long getItemId (int position)
-	{
-		return toDoApp.taskList.get (position).getId ( );
-	}
+    public Object getItem(int position) {
+        return toDoApp.taskList.get(position);
+    }
 
 
-	public View getView (int position, View convertView, ViewGroup parent)
-	{
-		ViewHolder holder;
+    public long getItemId(int position) {
+        return toDoApp.taskList.get(position).getId();
+    }
 
-		if (convertView == null)
-		{
-			convertView = mInflater.inflate (R.layout.todo_list_item, null);
 
-			holder = new ViewHolder ( );
-			holder.list_item_layout = (LinearLayout) convertView.findViewById (R.id.list_item_layout);
-			holder.icon = (ImageView) convertView.findViewById (R.id.task_check_icon);
-			holder.task_name = (TextView) convertView.findViewById (R.id.task_name);
-			holder.priorityColor = (TextView) convertView.findViewById (R.id.priority_color);
+    public View getView(int position, View convertView, ViewGroup parent) {
+        ViewHolder holder;
 
-			convertView.setTag (holder);
-		}
-		else
-		{
-			holder = (ViewHolder) convertView.getTag ( );
-		}
+        if (convertView == null) {
+            convertView = mInflater.inflate(R.layout.todo_list_item, null);
+
+            holder = new ViewHolder();
+            holder.list_item_layout = (LinearLayout) convertView.findViewById(R.id.list_item_layout);
+            holder.task_name = (TextView) convertView.findViewById(R.id.task_name);
+            holder.priorityColor = (TextView) convertView.findViewById(R.id.priority_color);
+
+            convertView.setTag(holder);
+        } else {
+            holder = (ViewHolder) convertView.getTag();
+        }
 
 		/*
-		 * Bind the data
+         * Bind the data
 		 */
-		Task task = toDoApp.taskList.get (position);
-		holder.task_name.setText (task.getName ( ));
+        Task task = toDoApp.taskList.get(position);
+        holder.task_name.setText(task.getName());
 
-		// Change the icon and the text style based on the "completed" info
-		changeItemStyle (holder, task);
+        // Change the icon and the text style based on the "completed" info
+        changeItemStyle(holder, task);
 
-		// Set the correct color (set priority)
-		setPriorityColor (holder, task.getPriority ( ));
+        // Set the correct color (set priority)
+        setPriorityColor(holder, task.getPriority());
 
-		return convertView;
-	}
+        return convertView;
+    }
 
-	/**
-	 * The ViewHolder class
-	 */
-	static class ViewHolder
-	{
-		LinearLayout	list_item_layout;
-		ImageView		icon;
-		TextView			task_name;
-		TextView			priorityColor;
-	}
+    /**
+     * The ViewHolder class
+     */
+    static class ViewHolder {
+        LinearLayout list_item_layout;
+        TextView task_name;
+        TextView priorityColor;
+    }
 
 }
