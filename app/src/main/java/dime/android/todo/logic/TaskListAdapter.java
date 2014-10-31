@@ -28,11 +28,9 @@ public class TaskListAdapter extends BaseAdapter {
     private void changeItemStyle(ViewHolder holder, Task task) {
         if (task.isCompleted()) {
             holder.task_name.setPaintFlags(holder.task_name.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-            holder.task_name.setTextColor(context.getResources().getColor(R.color.gray));
             holder.list_item_layout.setBackgroundResource(R.color.gray_transparent);
         } else {
             holder.task_name.setPaintFlags(holder.task_name.getPaintFlags() & ~Paint.STRIKE_THRU_TEXT_FLAG);
-            holder.task_name.setTextColor(context.getResources().getColor(R.color.white));
             holder.list_item_layout.setBackgroundResource(R.color.transparent);
         }
     }

@@ -51,16 +51,14 @@ public class ToDoList extends ActionBarActivity implements OnClickListener, OnIt
 
         toDoApp = (ToDo) getApplication();
 
+        actionBar = getSupportActionBar();
+        actionBar.setHomeButtonEnabled(true);
+
         listAdapter = new TaskListAdapter(this);
         taskList = (ListView) findViewById(R.id.task_list);
         taskList.setOnTouchListener(taskListSwipeDetector);
         taskList.setOnItemClickListener(this);
         taskList.setAdapter(listAdapter);
-
-        actionBar = getSupportActionBar();
-        actionBar.setHomeButtonEnabled(true);
-
-        registerForContextMenu(taskList);
     }
 
 
@@ -114,31 +112,6 @@ public class ToDoList extends ActionBarActivity implements OnClickListener, OnIt
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
-        }
-    }
-
-
-    @Override
-    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
-        super.onCreateContextMenu(menu, v, menuInfo);
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.list_long_menu, menu);
-    }
-
-
-    @Override
-    public boolean onContextItemSelected(MenuItem item) {
-        AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
-
-        switch (item.getItemId()) {
-            case R.id.edit_todo:
-                editTask(info.position);
-                return true;
-            case R.id.delete_todo:
-                deleteTask(info.position);
-                return true;
-            default:
-                return super.onContextItemSelected(item);
         }
     }
 

@@ -2,11 +2,14 @@
 <resources>
 
     <!-- Material design -->
-    <color name="primary_color_dark">#ff00334f</color>
-    <color name="primary_color">#ff00a8ff</color>
+    <color name="primary_color_dark">#ff006894</color>
+    <color name="primary_color">#ff0090cb</color>
     <color name="color_accent">#ff0069a8</color>
 
-    <color name="color_control_normal">#ffff0a00</color>
+    <color name="color_control_normal">#ff0090cb</color>
+    <color name="color_control_activated">#ff006894</color>
+
+    <color name="text_color_primary">#fff</color>
 
 
     <!-- Main colors -->
