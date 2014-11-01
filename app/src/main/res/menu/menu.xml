@@ -3,12 +3,6 @@
     xmlns:todo="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/new_todo"
-        android:icon="@drawable/ic_action_new"
-        android:title="@string/new_task"
-        todo:showAsAction="ifRoom" />
-
-    <item
         android:id="@+id/settings"
         android:icon="@drawable/ic_action_settings"
         android:title="@string/settings"

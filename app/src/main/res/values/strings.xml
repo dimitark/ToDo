@@ -10,8 +10,9 @@
     <string name="settings">Settings</string>
 
     <!-- New/Edit -->
+
     <string name="new_edit_todo">Add/Edit To-Do</string>
-    <string name="todo">To-Do:</string>
+    <string name="todo">What?</string>
     <string name="priority">Priority:</string>
     <string name="save">Save</string>
     <string name="cancel">Cancel</string>

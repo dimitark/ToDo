@@ -1,11 +1,15 @@
 package dime.android.todo.ui;
 
+import android.media.Image;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
@@ -14,14 +18,31 @@ import dime.android.todo.ToDo;
 import dime.android.todo.logic.Task;
 
 public class NewEditToDo extends ActionBarActivity implements OnClickListener {
-    private Button saveBtn;
-
     private EditText txtName;
-
     private ToggleButton[] priorityButtons;
-
     private Task task;
+    private ActionBar actionBar;
 
+    /* Action bar elements */
+    private ImageButton cancelButton;
+    private ImageButton saveButton;
+
+
+    private void setUpTheActionBar() {
+         /* Set up the custom action bar */
+        actionBar = getSupportActionBar();
+        actionBar.setHomeButtonEnabled(false);
+        View actionBarView = getLayoutInflater().inflate(R.layout.new_edit_action_bar, null);
+        actionBar.setCustomView(actionBarView);
+        actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+
+        // Register the click actions
+        cancelButton = (ImageButton) actionBarView.findViewById(R.id.cancel);
+        saveButton = (ImageButton) actionBarView.findViewById(R.id.save);
+
+        cancelButton.setOnClickListener(this);
+        saveButton.setOnClickListener(this);
+    }
 
     /**
      * Called when the activity is first created.
@@ -31,15 +52,15 @@ public class NewEditToDo extends ActionBarActivity implements OnClickListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.edit_todo);
 
-        saveBtn = (Button) findViewById(R.id.btn_save);
+        /* Set up the action bar */
+        setUpTheActionBar();
+
         txtName = (EditText) findViewById(R.id.txt_name);
 
         priorityButtons = new ToggleButton[3];
         priorityButtons[Task.PRIORITY_LOW] = (ToggleButton) findViewById(R.id.btn_low_priority);
         priorityButtons[Task.PRIORITY_NORMAL] = (ToggleButton) findViewById(R.id.btn_normal_priority);
         priorityButtons[Task.PRIORITY_HIGH] = (ToggleButton) findViewById(R.id.btn_high_priority);
-
-        saveBtn.setOnClickListener(this);
 
         priorityButtons[Task.PRIORITY_LOW].setOnClickListener(this);
         priorityButtons[Task.PRIORITY_NORMAL].setOnClickListener(this);
@@ -87,7 +108,7 @@ public class NewEditToDo extends ActionBarActivity implements OnClickListener {
 
 
     public void onClick(View v) {
-        if (v == saveBtn) {
+        if (v == saveButton) {
             if (task == null) {
                 /*
                  * We are adding a new task
@@ -115,6 +136,8 @@ public class NewEditToDo extends ActionBarActivity implements OnClickListener {
                     finish();
                 }
             }
+        } else if (v == cancelButton) {
+            finish();
         } else if (v == priorityButtons[Task.PRIORITY_LOW]) {
             selectPriority(Task.PRIORITY_LOW);
         } else if (v == priorityButtons[Task.PRIORITY_NORMAL]) {

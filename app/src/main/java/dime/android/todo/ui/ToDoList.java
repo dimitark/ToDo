@@ -2,32 +2,41 @@ package dime.android.todo.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
-import android.view.ContextMenu;
-import android.view.ContextMenu.ContextMenuInfo;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
-import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ImageButton;
 import android.widget.ListView;
 
 import dime.android.todo.R;
 import dime.android.todo.ToDo;
 import dime.android.todo.logic.Task;
-import dime.android.todo.logic.TaskListAdapter;
+import dime.android.todo.logic.TaskListNewAdapter;
 
-public class ToDoList extends ActionBarActivity implements OnClickListener, OnItemClickListener {
+public class ToDoList extends ActionBarActivity implements OnClickListener, OnItemClickListener, SwipeDismissListViewTouchListener.DismissCallbacks {
     private ToDo toDoApp;
     private ListView taskList;
     private SwipeDetector taskListSwipeDetector = new SwipeDetector();
-    private TaskListAdapter listAdapter;
 
     private ActionBar actionBar;
+
+    /* Using the new RecyclerView as a list widget */
+    private RecyclerView recyclerView;
+    private RecyclerView.Adapter recyclerViewAdapter;
+    private RecyclerView.LayoutManager recyclerViewLayoutManager;
+
+    /* The floating add button */
+    private ImageButton addButton;
 
 
     private void removeCompleted() {
@@ -54,11 +63,25 @@ public class ToDoList extends ActionBarActivity implements OnClickListener, OnIt
         actionBar = getSupportActionBar();
         actionBar.setHomeButtonEnabled(true);
 
-        listAdapter = new TaskListAdapter(this);
-        taskList = (ListView) findViewById(R.id.task_list);
-        taskList.setOnTouchListener(taskListSwipeDetector);
-        taskList.setOnItemClickListener(this);
-        taskList.setAdapter(listAdapter);
+        /* Set up the new Recycler view */
+        recyclerView = (RecyclerView) findViewById(R.id.task_list_new);
+        recyclerView.setHasFixedSize(true);
+
+        /* Set up the recycler view as a simple vertical list */
+        recyclerViewLayoutManager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(recyclerViewLayoutManager);
+        recyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL_LIST));
+
+        /* Set up the adapter */
+        recyclerViewAdapter = new TaskListNewAdapter(toDoApp);
+        recyclerView.setAdapter(recyclerViewAdapter);
+
+        /* Set the default animator */
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+
+        /* Get the add button */
+        addButton = (ImageButton) findViewById(R.id.new_todo);
+        addButton.setOnClickListener(this);
     }
 
 
@@ -68,7 +91,7 @@ public class ToDoList extends ActionBarActivity implements OnClickListener, OnIt
 
         if (!toDoApp.isDataValid()) {
             toDoApp.reloadFromDb();
-            listAdapter.notifyDataSetChanged();
+            recyclerViewAdapter.notifyDataSetChanged();
         }
     }
 
@@ -103,10 +126,6 @@ public class ToDoList extends ActionBarActivity implements OnClickListener, OnIt
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.new_todo:
-                toDoApp.setTaskToEdit(null);
-                showNewEditTodo();
-                return true;
             case R.id.settings:
                 openPreferencesActivity();
                 return true;
@@ -118,7 +137,7 @@ public class ToDoList extends ActionBarActivity implements OnClickListener, OnIt
 
     public void refreshUI() {
         toDoApp.reloadFromDb();
-        listAdapter.notifyDataSetChanged();
+        recyclerViewAdapter.notifyDataSetChanged();
     }
 
 
@@ -150,6 +169,10 @@ public class ToDoList extends ActionBarActivity implements OnClickListener, OnIt
 
 
     public void onClick(View v) {
+        if (v == addButton) {
+            toDoApp.setTaskToEdit(null);
+            showNewEditTodo();
+        }
     }
 
 
@@ -167,4 +190,16 @@ public class ToDoList extends ActionBarActivity implements OnClickListener, OnIt
         }
     }
 
+    @Override
+    public boolean canDismiss(int position) {
+        return true;
+    }
+
+    @Override
+    public void onDismiss(ListView listView, int[] reverseSortedPositions) {
+        for (int position : reverseSortedPositions) {
+            deleteTask(position);
+        }
+        recyclerViewAdapter.notifyDataSetChanged();
+    }
 }
