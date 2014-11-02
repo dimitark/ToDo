@@ -1,7 +1,6 @@
 package dime.android.todo.logic;
 
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,12 +8,13 @@ import android.widget.TextView;
 
 import dime.android.todo.R;
 import dime.android.todo.ToDo;
-import dime.android.todo.ui.SwipeDetector;
+import dime.android.todo.ui.RecyclerViewSwipeToRemove;
 
 /**
  * Created by dime on 31/10/14.
  */
-public class TaskListNewAdapter extends RecyclerView.Adapter<TaskListNewAdapter.ViewHolder> implements View.OnClickListener {
+public class TaskListNewAdapter extends RecyclerView.Adapter<TaskListNewAdapter.ViewHolder>
+        implements View.OnClickListener {
     public static final int colors[] = {R.color.low_priority, R.color.normal_priority, R.color.high_priority};
 
     private ToDo app;
@@ -78,7 +78,7 @@ public class TaskListNewAdapter extends RecyclerView.Adapter<TaskListNewAdapter.
             super(itemView);
 
             /* Register a swipe listener */
-            // itemView.setOnTouchListener(new SwipeDetector());
+//            itemView.setOnTouchListener(new SwipeDetector());
 
             /* Save the position */
             this.position = position;

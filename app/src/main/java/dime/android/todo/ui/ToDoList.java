@@ -24,17 +24,15 @@ import dime.android.todo.ToDo;
 import dime.android.todo.logic.Task;
 import dime.android.todo.logic.TaskListNewAdapter;
 
-public class ToDoList extends ActionBarActivity implements OnClickListener, OnItemClickListener,
-        SwipeDismissListViewTouchListener.DismissCallbacks, TaskListNewAdapter.ClickResponder{
+public class ToDoList extends ActionBarActivity implements OnClickListener, TaskListNewAdapter.ClickResponder, RecyclerViewSwipeToRemove.SwipeListener {
     private ToDo toDoApp;
     private ListView taskList;
-    private SwipeDetector taskListSwipeDetector = new SwipeDetector();
 
     private ActionBar actionBar;
 
     /* Using the new RecyclerView as a list widget */
     private RecyclerView recyclerView;
-    private RecyclerView.Adapter recyclerViewAdapter;
+    private TaskListNewAdapter recyclerViewAdapter;
     private RecyclerView.LayoutManager recyclerViewLayoutManager;
 
     /* The floating add button */
@@ -84,6 +82,9 @@ public class ToDoList extends ActionBarActivity implements OnClickListener, OnIt
         /* Get the add button */
         addButton = (ImageButton) findViewById(R.id.new_todo);
         addButton.setOnClickListener(this);
+
+        /* Register out SwipeToRemove touch listener */
+        recyclerView.addOnItemTouchListener(new RecyclerViewSwipeToRemove(this));
     }
 
 
@@ -178,35 +179,33 @@ public class ToDoList extends ActionBarActivity implements OnClickListener, OnIt
     }
 
 
-    public void onItemClick(AdapterView<?> parentView, View childView, int position, long id) {
-        /* Check if the user swiped */
-        if (taskListSwipeDetector.swipeDetected()) {
-            if (taskListSwipeDetector.getAction() == SwipeDetector.Action.LR ||
-                    taskListSwipeDetector.getAction() == SwipeDetector.Action.RL) {
-                // Item removed
-                deleteTask(position);
-            }
-        } else {
-
-        }
-    }
-
-    @Override
-    public boolean canDismiss(int position) {
-        return true;
-    }
-
-    @Override
-    public void onDismiss(ListView listView, int[] reverseSortedPositions) {
-        for (int position : reverseSortedPositions) {
-            deleteTask(position);
-        }
-        recyclerViewAdapter.notifyDataSetChanged();
-    }
-
     @Override
     public void onClick(int position) {
         /* On click - open the task in edit mode */
         editTask(position);
+    }
+
+    @Override
+    public void swipeCanceled(View v) {
+        if (v == null || v.getTag() == null) return;
+
+
+    }
+
+    @Override
+    public void swipeDone(View v) {
+        if (v == null || v.getTag() == null) return;
+
+        TaskListNewAdapter.ViewHolder vh = (TaskListNewAdapter.ViewHolder) v.getTag();
+        deleteTask(vh.position);
+        toDoApp.reloadFromDb();
+        recyclerViewAdapter.notifyItemRemoved(vh.position);
+    }
+
+    @Override
+    public void swipeInProgress(View v, float deltaX) {
+        if (v == null || v.getTag() == null) return;
+
+
     }
 }

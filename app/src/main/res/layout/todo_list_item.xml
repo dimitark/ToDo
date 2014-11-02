@@ -7,12 +7,22 @@
     android:layout_height="wrap_content"
     android:background="@drawable/todo_list_states" >
 
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/primary_color"
+        android:layout_alignParentLeft="true">
+
+    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/list_item_layout"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="5dip">
+        android:padding="5dip"
+        android:layout_alignParentLeft="true"
+        android:background="@color/white">
 
         <LinearLayout
             android:layout_width="50dp"
