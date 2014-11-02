@@ -19,7 +19,7 @@
         android:layout_gravity="bottom|right"
         android:layout_marginRight="16dp"
         android:layout_marginBottom="16dp"
-        android:background="@drawable/add_button_bg"
+        android:background="@drawable/add_button_states"
         android:stateListAnimator="@anim/add_button_anim"
         android:src="@drawable/ic_action_new"
         android:elevation="4dp"

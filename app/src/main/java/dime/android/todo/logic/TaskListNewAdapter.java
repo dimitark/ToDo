@@ -1,6 +1,7 @@
 package dime.android.todo.logic;
 
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,7 +14,7 @@ import dime.android.todo.ui.SwipeDetector;
 /**
  * Created by dime on 31/10/14.
  */
-public class TaskListNewAdapter extends RecyclerView.Adapter<TaskListNewAdapter.ViewHolder> {
+public class TaskListNewAdapter extends RecyclerView.Adapter<TaskListNewAdapter.ViewHolder> implements View.OnClickListener {
     public static final int colors[] = {R.color.low_priority, R.color.normal_priority, R.color.high_priority};
 
     private ToDo app;
@@ -30,14 +31,16 @@ public class TaskListNewAdapter extends RecyclerView.Adapter<TaskListNewAdapter.
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int position) {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.todo_list_item, parent, false);
+        v.setOnClickListener(this);
 
-        ViewHolder vh = new ViewHolder(v);
+        ViewHolder vh = new ViewHolder(v, position);
         return vh;
     }
 
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, int position) {
         Task task = app.taskList.get(position);
+        viewHolder.position = position;
         viewHolder.task_name.setText(task.getName());
         // viewHolder.priorityColor.setBackgroundResource(colors[task.getPriority()]);
     }
@@ -47,10 +50,16 @@ public class TaskListNewAdapter extends RecyclerView.Adapter<TaskListNewAdapter.
         return app.taskList.size();
     }
 
+    @Override
+    public void onClick(View v) {
+        Log.d("Bruh", "Clicked!");
+    }
+
     /**
      * The view holder class
      */
     public static class ViewHolder extends RecyclerView.ViewHolder {
+        public int position;
         public TextView task_name;
         public View priorityColor;
 
@@ -59,11 +68,14 @@ public class TaskListNewAdapter extends RecyclerView.Adapter<TaskListNewAdapter.
          *
          * @param itemView
          */
-        public ViewHolder(View itemView) {
+        public ViewHolder(View itemView, int position) {
             super(itemView);
 
             /* Register a swipe listener */
-            itemView.setOnTouchListener(new SwipeDetector());
+            // itemView.setOnTouchListener(new SwipeDetector());
+
+            /* Save the position */
+            this.position = position;
 
             /* get references to the views */
             task_name = (TextView) itemView.findViewById(R.id.task_name);

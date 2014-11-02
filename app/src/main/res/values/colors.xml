@@ -6,14 +6,15 @@
     <color name="primary_color">#ff0090cb</color>
     <color name="color_accent">#ff0069a8</color>
 
-    <color name="color_control_normal">#ff0090cb</color>
-    <color name="color_control_activated">#ff006894</color>
+    <color name="color_control_normal">#ffa7a7a7</color>
+    <color name="color_control_activated">#ff757575</color>
 
     <color name="text_color_primary">#fff</color>
 
     <!-- Main colors -->
     <color name="white">#ffffff</color>
     <color name="done">#259b24</color>
+    <color name="list_clicked">#ffd1d1d1</color>
 
     <!-- Main colors -->
     <color name="dark_blue">#003753</color>

@@ -11,6 +11,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
@@ -23,7 +24,8 @@ import dime.android.todo.ToDo;
 import dime.android.todo.logic.Task;
 import dime.android.todo.logic.TaskListNewAdapter;
 
-public class ToDoList extends ActionBarActivity implements OnClickListener, OnItemClickListener, SwipeDismissListViewTouchListener.DismissCallbacks {
+public class ToDoList extends ActionBarActivity implements OnClickListener, OnItemClickListener,
+        SwipeDismissListViewTouchListener.DismissCallbacks{
     private ToDo toDoApp;
     private ListView taskList;
     private SwipeDetector taskListSwipeDetector = new SwipeDetector();
