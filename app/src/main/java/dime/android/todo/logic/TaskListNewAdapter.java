@@ -18,14 +18,16 @@ public class TaskListNewAdapter extends RecyclerView.Adapter<TaskListNewAdapter.
     public static final int colors[] = {R.color.low_priority, R.color.normal_priority, R.color.high_priority};
 
     private ToDo app;
+    private ClickResponder clickResponder;
 
     /**
      * Default constructor
      *
      * @param app
      */
-    public TaskListNewAdapter(ToDo app) {
+    public TaskListNewAdapter(ToDo app, ClickResponder clickResponder) {
         this.app = app;
+        this.clickResponder = clickResponder;
     }
 
     @Override
@@ -34,6 +36,7 @@ public class TaskListNewAdapter extends RecyclerView.Adapter<TaskListNewAdapter.
         v.setOnClickListener(this);
 
         ViewHolder vh = new ViewHolder(v, position);
+        v.setTag(vh);
         return vh;
     }
 
@@ -52,7 +55,10 @@ public class TaskListNewAdapter extends RecyclerView.Adapter<TaskListNewAdapter.
 
     @Override
     public void onClick(View v) {
-        Log.d("Bruh", "Clicked!");
+        if (clickResponder != null) {
+            ViewHolder vh = (ViewHolder) v.getTag();
+            clickResponder.onClick(vh.position);
+        }
     }
 
     /**
@@ -81,5 +87,10 @@ public class TaskListNewAdapter extends RecyclerView.Adapter<TaskListNewAdapter.
             task_name = (TextView) itemView.findViewById(R.id.task_name);
             priorityColor = itemView.findViewById(R.id.priority_color);
         }
+    }
+
+
+    public interface ClickResponder {
+        public void onClick(int position);
     }
 }

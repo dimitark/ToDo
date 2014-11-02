@@ -25,7 +25,7 @@ import dime.android.todo.logic.Task;
 import dime.android.todo.logic.TaskListNewAdapter;
 
 public class ToDoList extends ActionBarActivity implements OnClickListener, OnItemClickListener,
-        SwipeDismissListViewTouchListener.DismissCallbacks{
+        SwipeDismissListViewTouchListener.DismissCallbacks, TaskListNewAdapter.ClickResponder{
     private ToDo toDoApp;
     private ListView taskList;
     private SwipeDetector taskListSwipeDetector = new SwipeDetector();
@@ -75,7 +75,7 @@ public class ToDoList extends ActionBarActivity implements OnClickListener, OnIt
         recyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL_LIST));
 
         /* Set up the adapter */
-        recyclerViewAdapter = new TaskListNewAdapter(toDoApp);
+        recyclerViewAdapter = new TaskListNewAdapter(toDoApp, this);
         recyclerView.setAdapter(recyclerViewAdapter);
 
         /* Set the default animator */
@@ -187,8 +187,7 @@ public class ToDoList extends ActionBarActivity implements OnClickListener, OnIt
                 deleteTask(position);
             }
         } else {
-            /* On click - open the task in edit mode */
-            editTask(position);
+
         }
     }
 
@@ -203,5 +202,11 @@ public class ToDoList extends ActionBarActivity implements OnClickListener, OnIt
             deleteTask(position);
         }
         recyclerViewAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onClick(int position) {
+        /* On click - open the task in edit mode */
+        editTask(position);
     }
 }
