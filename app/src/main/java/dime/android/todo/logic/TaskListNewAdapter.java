@@ -68,6 +68,7 @@ public class TaskListNewAdapter extends RecyclerView.Adapter<TaskListNewAdapter.
         public int position;
         public TextView task_name;
         public View priorityColor;
+        public View foregroundLayer;
 
         /**
          * Default constructor
@@ -86,6 +87,7 @@ public class TaskListNewAdapter extends RecyclerView.Adapter<TaskListNewAdapter.
             /* get references to the views */
             task_name = (TextView) itemView.findViewById(R.id.task_name);
             priorityColor = itemView.findViewById(R.id.priority_color);
+            foregroundLayer = itemView.findViewById(R.id.list_item_layout);
         }
     }
 

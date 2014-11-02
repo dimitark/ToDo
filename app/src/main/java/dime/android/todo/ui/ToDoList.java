@@ -2,7 +2,6 @@ package dime.android.todo.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -11,11 +10,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
+import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ListView;
 
@@ -189,7 +186,9 @@ public class ToDoList extends ActionBarActivity implements OnClickListener, Task
     public void swipeCanceled(View v) {
         if (v == null || v.getTag() == null) return;
 
-
+        ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) ((TaskListNewAdapter.ViewHolder)v.getTag()).foregroundLayer.getLayoutParams();
+        params.setMargins(0, params.topMargin, 0, params.bottomMargin);
+        v.requestLayout();
     }
 
     @Override
@@ -200,12 +199,17 @@ public class ToDoList extends ActionBarActivity implements OnClickListener, Task
         deleteTask(vh.position);
         toDoApp.reloadFromDb();
         recyclerViewAdapter.notifyItemRemoved(vh.position);
+
+        ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) vh.foregroundLayer.getLayoutParams();
+        params.setMargins(0, params.topMargin, 0, params.bottomMargin);
     }
 
     @Override
     public void swipeInProgress(View v, float deltaX) {
         if (v == null || v.getTag() == null) return;
 
-
+        ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) ((TaskListNewAdapter.ViewHolder)v.getTag()).foregroundLayer.getLayoutParams();
+        params.setMargins((int) -deltaX, params.topMargin, (int) deltaX, params.bottomMargin);
+        v.requestLayout();
     }
 }

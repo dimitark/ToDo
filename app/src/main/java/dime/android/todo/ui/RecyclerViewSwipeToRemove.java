@@ -1,7 +1,6 @@
 package dime.android.todo.ui;
 
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -10,7 +9,7 @@ import android.view.View;
  */
 public class RecyclerViewSwipeToRemove implements RecyclerView.OnItemTouchListener {
     private static final int LOCK_MIN_DISTANCE = 20;
-    private static final int MIN_DISTANCE = 100;
+    private static final int MIN_DISTANCE = 400;
     private SwipeListener swipeListener;
 
     private float downX, downY;
