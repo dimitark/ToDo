@@ -235,7 +235,7 @@ public class ToDoList extends ActionBarActivity
     public void swipeCanceled(View v, float deltaX) {
         if (v == null || v.getTag() == null || deltaX > 0) return;
 
-        //finishPrevAnimations();
+        finishPrevAnimations();
 
         ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) ((TaskListNewAdapter.ViewHolder)v.getTag()).foregroundLayer.getLayoutParams();
         animTargetParams = params;
@@ -249,6 +249,8 @@ public class ToDoList extends ActionBarActivity
     @Override
     public void swipeDone(View v, float deltaX) {
         if (v == null || v.getTag() == null || deltaX > 0) return;
+
+        finishPrevAnimations();
 
         TaskListNewAdapter.ViewHolder vh = (TaskListNewAdapter.ViewHolder) v.getTag();
 
@@ -272,8 +274,15 @@ public class ToDoList extends ActionBarActivity
     }
 
     private void finishPrevAnimations() {
-        cancelLeftMarginAnimator.cancel();
-        cancelRightMarginAnimator.cancel();
+        if (cancelLeftMarginAnimator.isRunning()) {
+            cancelLeftMarginAnimator.cancel();
+            cancelRightMarginAnimator.cancel();
+        }
+
+        if (doneLeftMarginAnimator.isRunning()) {
+            doneLeftMarginAnimator.cancel();
+            doneRightMarginAnimator.cancel();
+        }
     }
 
     private void finishRemovingTask() {
@@ -304,6 +313,7 @@ public class ToDoList extends ActionBarActivity
 
     @Override
     public void onAnimationCancel(Animator animation) {
+        Log.d("Anim", "Cancel");
         if (animation == doneLeftMarginAnimator) {
             finishRemovingTask();
         } else {
