@@ -9,7 +9,8 @@ import android.view.View;
  */
 public class RecyclerViewSwipeToRemove implements RecyclerView.OnItemTouchListener {
     private static final int LOCK_MIN_DISTANCE = 20;
-    private static final int MIN_DISTANCE = 400;
+    private static final int DEFAULT_MIN_DISTANCE = 200;
+
     private SwipeListener swipeListener;
 
     private float downX, downY;
@@ -17,12 +18,18 @@ public class RecyclerViewSwipeToRemove implements RecyclerView.OnItemTouchListen
     private ScrollOrientation scrollOrientation;
     private View childView;
 
+    /* The min distance need for the swipe. It should be half of the whole width of the recycler view */
+    private int minDistance = -1;
+
     private enum ScrollOrientation {
         HORIZONTAL, VERTICAL;
     }
 
     public RecyclerViewSwipeToRemove(SwipeListener swipeListener) {
         this.swipeListener = swipeListener;
+
+        /* TODO Calculate the min distance */
+        minDistance = DEFAULT_MIN_DISTANCE;
     }
 
     @Override
@@ -76,25 +83,22 @@ public class RecyclerViewSwipeToRemove implements RecyclerView.OnItemTouchListen
 
     @Override
     public void onTouchEvent(RecyclerView recyclerView, MotionEvent event) {
-        float deltaX;
+        float deltaX = downX - event.getX();
         switch (event.getAction()) {
             case MotionEvent.ACTION_MOVE:
-                /* Get the deltas */
-                deltaX = downX - event.getX();
                 /* Inform the listener */
                 swipeListener.swipeInProgress(childView, deltaX);
                 break;
             case MotionEvent.ACTION_CANCEL:
-                swipeListener.swipeCanceled(childView);
+                swipeListener.swipeCanceled(childView, deltaX);
                 break;
             case MotionEvent.ACTION_UP:
-                deltaX = downX - event.getX();
-                if (Math.abs(deltaX) > MIN_DISTANCE) {
+                if (Math.abs(deltaX) > minDistance) {
                     /* Inform the listener that the swipe has been done */
-                    swipeListener.swipeDone(childView);
+                    swipeListener.swipeDone(childView, deltaX);
                 } else {
                     /* The swipe has been canceled */
-                    swipeListener.swipeCanceled(childView);
+                    swipeListener.swipeCanceled(childView, deltaX);
                 }
                 break;
         }
@@ -109,13 +113,13 @@ public class RecyclerViewSwipeToRemove implements RecyclerView.OnItemTouchListen
          *
          * @param v The view on which the swipe has been happening
          */
-        public void swipeCanceled(View v);
+        public void swipeCanceled(View v, float deltaX);
         /**
          * Called when the swipe has been done.
          *
          * @param v The view on which the swipe has been happening
          */
-        public void swipeDone(View v);
+        public void swipeDone(View v, float deltaX);
         /**
          * Called for every move motion action on the given view.
          *

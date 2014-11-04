@@ -1,18 +1,25 @@
 package dime.android.todo.ui;
 
+import android.animation.Animator;
+import android.animation.ValueAnimator;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.BounceInterpolator;
+import android.view.animation.OvershootInterpolator;
 import android.widget.ImageButton;
 import android.widget.ListView;
 
@@ -21,7 +28,10 @@ import dime.android.todo.ToDo;
 import dime.android.todo.logic.Task;
 import dime.android.todo.logic.TaskListNewAdapter;
 
-public class ToDoList extends ActionBarActivity implements OnClickListener, TaskListNewAdapter.ClickResponder, RecyclerViewSwipeToRemove.SwipeListener {
+public class ToDoList extends ActionBarActivity
+        implements OnClickListener, TaskListNewAdapter.ClickResponder, RecyclerViewSwipeToRemove.SwipeListener, ValueAnimator.AnimatorListener {
+
+    private static final int ANIMATIONS_DURATION = 500;
     private ToDo toDoApp;
     private ListView taskList;
 
@@ -34,6 +44,15 @@ public class ToDoList extends ActionBarActivity implements OnClickListener, Task
 
     /* The floating add button */
     private ImageButton addButton;
+
+    /* The animators used to animated the swipeCanceled & swipeDone events */
+    private ValueAnimator cancelLeftMarginAnimator = ValueAnimator.ofInt(0, 0);
+    private ValueAnimator cancelRightMarginAnimator = ValueAnimator.ofInt(0, 0);
+    private ValueAnimator doneLeftMarginAnimator = ValueAnimator.ofInt(0, 0);
+    private ValueAnimator doneRightMarginAnimator = ValueAnimator.ofInt(0, 0);
+    private ViewGroup.MarginLayoutParams animTargetParams;
+    private View animTargetView;
+
 
 
     private void removeCompleted() {
@@ -82,6 +101,36 @@ public class ToDoList extends ActionBarActivity implements OnClickListener, Task
 
         /* Register out SwipeToRemove touch listener */
         recyclerView.addOnItemTouchListener(new RecyclerViewSwipeToRemove(this));
+
+        /* Init the animations */
+        cancelLeftMarginAnimator.setInterpolator(new BounceInterpolator());
+        cancelRightMarginAnimator.setInterpolator(new BounceInterpolator());
+        doneLeftMarginAnimator.setInterpolator(new AccelerateInterpolator());
+        doneRightMarginAnimator.setInterpolator(new AccelerateInterpolator());
+        cancelLeftMarginAnimator.setDuration(ANIMATIONS_DURATION);
+        cancelRightMarginAnimator.setDuration(ANIMATIONS_DURATION);
+        doneLeftMarginAnimator.setDuration(250);
+        doneRightMarginAnimator.setDuration(250);
+        cancelLeftMarginAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                animTargetParams.setMargins((Integer) cancelLeftMarginAnimator.getAnimatedValue(), animTargetParams.topMargin,
+                        (Integer) cancelRightMarginAnimator.getAnimatedValue(), animTargetParams.bottomMargin);
+                animTargetView.requestLayout();
+            }
+        }); // It's enough just one animator (of each type) to register an update listener
+        doneLeftMarginAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                animTargetParams.setMargins((Integer) doneLeftMarginAnimator.getAnimatedValue(), animTargetParams.topMargin,
+                        (Integer) doneRightMarginAnimator.getAnimatedValue(), animTargetParams.bottomMargin);
+                animTargetView.requestLayout();
+
+                Log.d("Anim", doneLeftMarginAnimator.getAnimatedValue() + ", " + doneRightMarginAnimator.getAnimatedValue());
+            }
+        });
+        cancelLeftMarginAnimator.addListener(this);
+        doneLeftMarginAnimator.addListener(this);
     }
 
 
@@ -183,33 +232,87 @@ public class ToDoList extends ActionBarActivity implements OnClickListener, Task
     }
 
     @Override
-    public void swipeCanceled(View v) {
-        if (v == null || v.getTag() == null) return;
+    public void swipeCanceled(View v, float deltaX) {
+        if (v == null || v.getTag() == null || deltaX > 0) return;
+
+        //finishPrevAnimations();
 
         ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) ((TaskListNewAdapter.ViewHolder)v.getTag()).foregroundLayer.getLayoutParams();
-        params.setMargins(0, params.topMargin, 0, params.bottomMargin);
-        v.requestLayout();
+        animTargetParams = params;
+        animTargetView = v;
+        cancelLeftMarginAnimator.setIntValues(params.leftMargin, 0);
+        cancelRightMarginAnimator.setIntValues(params.rightMargin, 0);
+        cancelLeftMarginAnimator.start();
+        cancelRightMarginAnimator.start();
     }
 
     @Override
-    public void swipeDone(View v) {
-        if (v == null || v.getTag() == null) return;
+    public void swipeDone(View v, float deltaX) {
+        if (v == null || v.getTag() == null || deltaX > 0) return;
 
         TaskListNewAdapter.ViewHolder vh = (TaskListNewAdapter.ViewHolder) v.getTag();
-        deleteTask(vh.position);
-        toDoApp.reloadFromDb();
-        recyclerViewAdapter.notifyItemRemoved(vh.position);
 
         ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) vh.foregroundLayer.getLayoutParams();
-        params.setMargins(0, params.topMargin, 0, params.bottomMargin);
+        animTargetParams = params;
+        animTargetView = v;
+        doneLeftMarginAnimator.setIntValues(params.leftMargin, animTargetView.getMeasuredWidth());
+        doneRightMarginAnimator.setIntValues(params.rightMargin, -animTargetView.getMeasuredWidth());
+
+        doneLeftMarginAnimator.start();
+        doneRightMarginAnimator.start();
     }
 
     @Override
     public void swipeInProgress(View v, float deltaX) {
-        if (v == null || v.getTag() == null) return;
+        if (v == null || v.getTag() == null || deltaX > 0) return;
 
         ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) ((TaskListNewAdapter.ViewHolder)v.getTag()).foregroundLayer.getLayoutParams();
         params.setMargins((int) -deltaX, params.topMargin, (int) deltaX, params.bottomMargin);
         v.requestLayout();
+    }
+
+    private void finishPrevAnimations() {
+        cancelLeftMarginAnimator.cancel();
+        cancelRightMarginAnimator.cancel();
+    }
+
+    private void finishRemovingTask() {
+        TaskListNewAdapter.ViewHolder vh = (TaskListNewAdapter.ViewHolder) animTargetView.getTag();
+        deleteTask(vh.position);
+        toDoApp.reloadFromDb();
+        recyclerViewAdapter.notifyItemRemoved(vh.position);
+        animTargetParams.setMargins(0, animTargetParams.topMargin, 0, animTargetParams.bottomMargin);
+    }
+
+    @Override
+    public void onAnimationStart(Animator animation) {
+
+    }
+
+    @Override
+    public void onAnimationEnd(Animator animation) {
+        if (animation == doneLeftMarginAnimator) {
+            Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    finishRemovingTask();
+                }
+            }, 500);
+        }
+    }
+
+    @Override
+    public void onAnimationCancel(Animator animation) {
+        if (animation == doneLeftMarginAnimator) {
+            finishRemovingTask();
+        } else {
+            animTargetParams.setMargins(0, animTargetParams.topMargin, 0, animTargetParams.bottomMargin);
+        }
+    }
+
+    @Override
+    public void onAnimationRepeat(Animator animation) {
+
     }
 }
