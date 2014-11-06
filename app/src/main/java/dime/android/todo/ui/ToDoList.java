@@ -82,6 +82,7 @@ public class ToDoList extends ActionBarActivity
         /* Set up the new Recycler view */
         recyclerView = (RecyclerView) findViewById(R.id.task_list_new);
         recyclerView.setHasFixedSize(true);
+        recyclerView.setItemAnimator(new ToDoListAnimator());
 
         /* Set up the recycler view as a simple vertical list */
         recyclerViewLayoutManager = new LinearLayoutManager(this);
@@ -125,8 +126,6 @@ public class ToDoList extends ActionBarActivity
                 animTargetParams.setMargins((Integer) doneLeftMarginAnimator.getAnimatedValue(), animTargetParams.topMargin,
                         (Integer) doneRightMarginAnimator.getAnimatedValue(), animTargetParams.bottomMargin);
                 animTargetView.requestLayout();
-
-                Log.d("Anim", doneLeftMarginAnimator.getAnimatedValue() + ", " + doneRightMarginAnimator.getAnimatedValue());
             }
         });
         cancelLeftMarginAnimator.addListener(this);
@@ -313,7 +312,6 @@ public class ToDoList extends ActionBarActivity
 
     @Override
     public void onAnimationCancel(Animator animation) {
-        Log.d("Anim", "Cancel");
         if (animation == doneLeftMarginAnimator) {
             finishRemovingTask();
         } else {

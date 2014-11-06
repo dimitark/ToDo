@@ -4,6 +4,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import dime.android.todo.R;
@@ -16,6 +17,7 @@ import dime.android.todo.ui.RecyclerViewSwipeToRemove;
 public class TaskListNewAdapter extends RecyclerView.Adapter<TaskListNewAdapter.ViewHolder>
         implements View.OnClickListener {
     public static final int colors[] = {R.color.low_priority, R.color.normal_priority, R.color.high_priority};
+    public static final float alpha[] = {0.25f, 0.5f, 1.0f};
 
     private ToDo app;
     private ClickResponder clickResponder;
@@ -45,7 +47,9 @@ public class TaskListNewAdapter extends RecyclerView.Adapter<TaskListNewAdapter.
         Task task = app.taskList.get(position);
         viewHolder.position = position;
         viewHolder.task_name.setText(task.getName());
-        // viewHolder.priorityColor.setBackgroundResource(colors[task.getPriority()]);
+        viewHolder.priorityImage.setAlpha(alpha[task.getPriority()]);
+        viewHolder.priorityImage.setColorFilter(viewHolder.itemView.getResources().getColor(colors[task.getPriority()]));
+//        viewHolder.foregroundLayer.setBackgroundResource(colors[task.getPriority()]);
     }
 
     @Override
@@ -67,8 +71,8 @@ public class TaskListNewAdapter extends RecyclerView.Adapter<TaskListNewAdapter.
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public int position;
         public TextView task_name;
-        public View priorityColor;
         public View foregroundLayer;
+        public ImageView priorityImage;
 
         /**
          * Default constructor
@@ -78,16 +82,13 @@ public class TaskListNewAdapter extends RecyclerView.Adapter<TaskListNewAdapter.
         public ViewHolder(View itemView, int position) {
             super(itemView);
 
-            /* Register a swipe listener */
-//            itemView.setOnTouchListener(new SwipeDetector());
-
             /* Save the position */
             this.position = position;
 
             /* get references to the views */
             task_name = (TextView) itemView.findViewById(R.id.task_name);
-//            priorityColor = itemView.findViewById(R.id.priority_color);
             foregroundLayer = itemView.findViewById(R.id.list_item_layout);
+            priorityImage = (ImageView) itemView.findViewById(R.id.priority_image);
         }
     }
 
