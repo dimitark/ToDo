@@ -28,8 +28,7 @@ import dime.android.todo.ToDo;
 import dime.android.todo.logic.Task;
 import dime.android.todo.logic.TaskListNewAdapter;
 
-public class ToDoList extends ActionBarActivity
-        implements OnClickListener, TaskListNewAdapter.ClickResponder, RecyclerViewSwipeToRemove.SwipeListener, ValueAnimator.AnimatorListener {
+public class ToDoList extends ActionBarActivity implements OnClickListener, TaskListNewAdapter.ClickResponder, RecyclerViewSwipeToRemove.SwipeListener {
 
     private static final int ANIMATIONS_DURATION = 500;
     private ToDo toDoApp;
@@ -44,16 +43,6 @@ public class ToDoList extends ActionBarActivity
 
     /* The floating add button */
     private ImageButton addButton;
-
-    /* The animators used to animated the swipeCanceled & swipeDone events */
-    private ValueAnimator cancelLeftMarginAnimator = ValueAnimator.ofInt(0, 0);
-    private ValueAnimator cancelRightMarginAnimator = ValueAnimator.ofInt(0, 0);
-    private ValueAnimator doneLeftMarginAnimator = ValueAnimator.ofInt(0, 0);
-    private ValueAnimator doneRightMarginAnimator = ValueAnimator.ofInt(0, 0);
-    private ViewGroup.MarginLayoutParams animTargetParams;
-    private View animTargetView;
-
-
 
     private void removeCompleted() {
         toDoApp.dbHelper.deleteCompleted();
@@ -102,34 +91,6 @@ public class ToDoList extends ActionBarActivity
 
         /* Register out SwipeToRemove touch listener */
         recyclerView.addOnItemTouchListener(new RecyclerViewSwipeToRemove(this));
-
-        /* Init the animations */
-        cancelLeftMarginAnimator.setInterpolator(new BounceInterpolator());
-        cancelRightMarginAnimator.setInterpolator(new BounceInterpolator());
-        doneLeftMarginAnimator.setInterpolator(new AccelerateInterpolator());
-        doneRightMarginAnimator.setInterpolator(new AccelerateInterpolator());
-        cancelLeftMarginAnimator.setDuration(ANIMATIONS_DURATION);
-        cancelRightMarginAnimator.setDuration(ANIMATIONS_DURATION);
-        doneLeftMarginAnimator.setDuration(250);
-        doneRightMarginAnimator.setDuration(250);
-        cancelLeftMarginAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                animTargetParams.setMargins((Integer) cancelLeftMarginAnimator.getAnimatedValue(), animTargetParams.topMargin,
-                        (Integer) cancelRightMarginAnimator.getAnimatedValue(), animTargetParams.bottomMargin);
-                animTargetView.requestLayout();
-            }
-        }); // It's enough just one animator (of each type) to register an update listener
-        doneLeftMarginAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                animTargetParams.setMargins((Integer) doneLeftMarginAnimator.getAnimatedValue(), animTargetParams.topMargin,
-                        (Integer) doneRightMarginAnimator.getAnimatedValue(), animTargetParams.bottomMargin);
-                animTargetView.requestLayout();
-            }
-        });
-        cancelLeftMarginAnimator.addListener(this);
-        doneLeftMarginAnimator.addListener(this);
     }
 
 
@@ -234,93 +195,59 @@ public class ToDoList extends ActionBarActivity
     public void swipeCanceled(View v, float deltaX) {
         if (v == null || v.getTag() == null || deltaX > 0) return;
 
-        finishPrevAnimations();
+        // Get the ViewHolder
+        final TaskListNewAdapter.ViewHolder viewHolder = ((TaskListNewAdapter.ViewHolder)v.getTag());
 
-        ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) ((TaskListNewAdapter.ViewHolder)v.getTag()).foregroundLayer.getLayoutParams();
-        animTargetParams = params;
-        animTargetView = v;
-        cancelLeftMarginAnimator.setIntValues(params.leftMargin, 0);
-        cancelRightMarginAnimator.setIntValues(params.rightMargin, 0);
-        cancelLeftMarginAnimator.start();
-        cancelRightMarginAnimator.start();
+        viewHolder.foregroundLayer.animate().x(0).setInterpolator(new BounceInterpolator())
+                .withEndAction(new Runnable() {
+                    @Override
+                    public void run() {
+                        viewHolder.foregroundLayer.setX(0);
+                        viewHolder.foregroundLayer.requestLayout();
+                    }
+                }).start();
     }
 
     @Override
     public void swipeDone(View v, float deltaX) {
         if (v == null || v.getTag() == null || deltaX > 0) return;
 
-        finishPrevAnimations();
+        // Get the ViewHolder
+        final TaskListNewAdapter.ViewHolder viewHolder = ((TaskListNewAdapter.ViewHolder)v.getTag());
 
-        TaskListNewAdapter.ViewHolder vh = (TaskListNewAdapter.ViewHolder) v.getTag();
-
-        ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) vh.foregroundLayer.getLayoutParams();
-        animTargetParams = params;
-        animTargetView = v;
-        doneLeftMarginAnimator.setIntValues(params.leftMargin, animTargetView.getMeasuredWidth());
-        doneRightMarginAnimator.setIntValues(params.rightMargin, -animTargetView.getMeasuredWidth());
-
-        doneLeftMarginAnimator.start();
-        doneRightMarginAnimator.start();
+        viewHolder.foregroundLayer.animate().x(v.getMeasuredWidth()).setInterpolator(new AccelerateInterpolator())
+                .withEndAction(new Runnable() {
+                    @Override
+                    public void run() {
+                        finishRemovingTask(viewHolder);
+                    }
+                }).start();
     }
 
     @Override
     public void swipeInProgress(View v, float deltaX) {
         if (v == null || v.getTag() == null || deltaX > 0) return;
 
-        ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) ((TaskListNewAdapter.ViewHolder)v.getTag()).foregroundLayer.getLayoutParams();
-        params.setMargins((int) -deltaX, params.topMargin, (int) deltaX, params.bottomMargin);
-        v.requestLayout();
+        // Get the view holder
+        TaskListNewAdapter.ViewHolder viewHolder = ((TaskListNewAdapter.ViewHolder) v.getTag());
+        viewHolder.foregroundLayer.setX(-deltaX);
+        viewHolder.foregroundLayer.requestLayout();
     }
 
-    private void finishPrevAnimations() {
-        if (cancelLeftMarginAnimator.isRunning()) {
-            cancelLeftMarginAnimator.cancel();
-            cancelRightMarginAnimator.cancel();
-        }
+    private void finishRemovingTask(final TaskListNewAdapter.ViewHolder viewHolder) {
 
-        if (doneLeftMarginAnimator.isRunning()) {
-            doneLeftMarginAnimator.cancel();
-            doneRightMarginAnimator.cancel();
-        }
-    }
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                deleteTask(viewHolder.position);
+                toDoApp.reloadFromDb();
+                recyclerViewAdapter.notifyItemRemoved(viewHolder.position);
 
-    private void finishRemovingTask() {
-        TaskListNewAdapter.ViewHolder vh = (TaskListNewAdapter.ViewHolder) animTargetView.getTag();
-        deleteTask(vh.position);
-        toDoApp.reloadFromDb();
-        recyclerViewAdapter.notifyItemRemoved(vh.position);
-        animTargetParams.setMargins(0, animTargetParams.topMargin, 0, animTargetParams.bottomMargin);
-    }
-
-    @Override
-    public void onAnimationStart(Animator animation) {
-
-    }
-
-    @Override
-    public void onAnimationEnd(Animator animation) {
-        if (animation == doneLeftMarginAnimator) {
-            Handler handler = new Handler();
-            handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    finishRemovingTask();
-                }
-            }, 500);
-        }
-    }
-
-    @Override
-    public void onAnimationCancel(Animator animation) {
-        if (animation == doneLeftMarginAnimator) {
-            finishRemovingTask();
-        } else {
-            animTargetParams.setMargins(0, animTargetParams.topMargin, 0, animTargetParams.bottomMargin);
-        }
-    }
-
-    @Override
-    public void onAnimationRepeat(Animator animation) {
-
+                // Move everything back in it's place
+                viewHolder.foregroundLayer.setX(0);
+                viewHolder.foregroundLayer.requestLayout();
+            }
+        }, 500);
     }
 }
