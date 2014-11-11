@@ -2,7 +2,6 @@ package dime.android.todo.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -216,11 +215,11 @@ public class ToDoList extends ActionBarActivity implements OnClickListener, Task
 
     private void fadeOut(final TaskListNewAdapter.ViewHolder viewHolder) {
         viewHolder.itemView.animate().withEndAction(new Runnable() {
-                    @Override
-                    public void run() {
-                        finishRemovingTask(viewHolder);
-                    }
-                }).alpha(0);
+            @Override
+            public void run() {
+                finishRemovingTask(viewHolder);
+            }
+        }).alpha(0);
     }
 
     private void finishRemovingTask(final TaskListNewAdapter.ViewHolder viewHolder) {
