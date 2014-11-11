@@ -1,7 +1,5 @@
 package dime.android.todo.ui;
 
-import android.animation.Animator;
-import android.animation.ValueAnimator;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -10,18 +8,14 @@ import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.BounceInterpolator;
-import android.view.animation.OvershootInterpolator;
 import android.widget.ImageButton;
-import android.widget.ListView;
 
 import dime.android.todo.R;
 import dime.android.todo.ToDo;
@@ -30,10 +24,7 @@ import dime.android.todo.logic.TaskListNewAdapter;
 
 public class ToDoList extends ActionBarActivity implements OnClickListener, TaskListNewAdapter.ClickResponder, RecyclerViewSwipeToRemove.SwipeListener {
 
-    private static final int ANIMATIONS_DURATION = 500;
     private ToDo toDoApp;
-    private ListView taskList;
-
     private ActionBar actionBar;
 
     /* Using the new RecyclerView as a list widget */
@@ -44,10 +35,6 @@ public class ToDoList extends ActionBarActivity implements OnClickListener, Task
     /* The floating add button */
     private ImageButton addButton;
 
-    private void removeCompleted() {
-        toDoApp.dbHelper.deleteCompleted();
-        refreshUI();
-    }
 
     private void openPreferencesActivity() {
         Intent intent = new Intent(this, Preferences.class);
@@ -170,13 +157,6 @@ public class ToDoList extends ActionBarActivity implements OnClickListener, Task
     }
 
 
-    private void toggleCompleted(Task task) {
-        task.setCompleted(!task.isCompleted());
-        toDoApp.dbHelper.updateTask(task);
-        refreshUI();
-    }
-
-
     public void onClick(View v) {
         if (v == addButton) {
             toDoApp.setTaskToEdit(null);
@@ -219,7 +199,7 @@ public class ToDoList extends ActionBarActivity implements OnClickListener, Task
                 .withEndAction(new Runnable() {
                     @Override
                     public void run() {
-                        finishRemovingTask(viewHolder);
+                        fadeOut(viewHolder);
                     }
                 }).start();
     }
@@ -234,20 +214,23 @@ public class ToDoList extends ActionBarActivity implements OnClickListener, Task
         viewHolder.foregroundLayer.requestLayout();
     }
 
+    private void fadeOut(final TaskListNewAdapter.ViewHolder viewHolder) {
+        viewHolder.itemView.animate().withEndAction(new Runnable() {
+                    @Override
+                    public void run() {
+                        finishRemovingTask(viewHolder);
+                    }
+                }).alpha(0);
+    }
+
     private void finishRemovingTask(final TaskListNewAdapter.ViewHolder viewHolder) {
+        deleteTask(viewHolder.position);
+        toDoApp.reloadFromDb();
+        recyclerViewAdapter.notifyItemRemoved(viewHolder.position);
 
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                deleteTask(viewHolder.position);
-                toDoApp.reloadFromDb();
-                recyclerViewAdapter.notifyItemRemoved(viewHolder.position);
-
-                // Move everything back in it's place
-                viewHolder.foregroundLayer.setX(0);
-                viewHolder.foregroundLayer.requestLayout();
-            }
-        }, 500);
+        // Move everything back in it's place
+        viewHolder.foregroundLayer.setX(0);
+        viewHolder.foregroundLayer.requestLayout();
+        viewHolder.itemView.setAlpha(1f);
     }
 }
