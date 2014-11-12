@@ -7,11 +7,13 @@ import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewTreeObserver;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.BounceInterpolator;
 import android.widget.ImageButton;
@@ -94,7 +96,14 @@ public class ToDoList extends ActionBarActivity implements OnClickListener, Task
         addButton.setOnClickListener(this);
 
         /* Register out SwipeToRemove touch listener */
-        recyclerView.addOnItemTouchListener(new RecyclerViewSwipeToRemove(this));
+        final RecyclerViewSwipeToRemove swipeToRemove = new RecyclerViewSwipeToRemove(this);
+        recyclerView.addOnItemTouchListener(swipeToRemove);
+        findViewById(android.R.id.content).getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                swipeToRemove.recalculateMinDistance(recyclerView.getMeasuredWidth());
+            }
+        });
     }
 
 

@@ -27,9 +27,11 @@ public class RecyclerViewSwipeToRemove implements RecyclerView.OnItemTouchListen
 
     public RecyclerViewSwipeToRemove(SwipeListener swipeListener) {
         this.swipeListener = swipeListener;
-
-        /* TODO Calculate the min distance */
         minDistance = DEFAULT_MIN_DISTANCE;
+    }
+
+    public void recalculateMinDistance(int recyclerViewWidth) {
+        minDistance = recyclerViewWidth / 4;
     }
 
     @Override
