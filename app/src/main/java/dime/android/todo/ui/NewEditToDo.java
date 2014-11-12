@@ -4,22 +4,26 @@ import android.media.Image;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import dime.android.todo.R;
 import dime.android.todo.ToDo;
 import dime.android.todo.logic.Task;
+import dime.android.todo.logic.TaskListNewAdapter;
 
 public class NewEditToDo extends ActionBarActivity implements OnClickListener {
     private EditText txtName;
-    private ToggleButton[] priorityButtons;
+    private ImageButton[] priorityButtons;
     private Task task;
     private ActionBar actionBar;
 
@@ -56,15 +60,33 @@ public class NewEditToDo extends ActionBarActivity implements OnClickListener {
         setUpTheActionBar();
 
         txtName = (EditText) findViewById(R.id.txt_name);
+        txtName.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    save();
+                    return true;
+                }
 
-        priorityButtons = new ToggleButton[3];
-        priorityButtons[Task.PRIORITY_LOW] = (ToggleButton) findViewById(R.id.btn_low_priority);
-        priorityButtons[Task.PRIORITY_NORMAL] = (ToggleButton) findViewById(R.id.btn_normal_priority);
-        priorityButtons[Task.PRIORITY_HIGH] = (ToggleButton) findViewById(R.id.btn_high_priority);
+                return false;
+            }
+        });
+
+        priorityButtons = new ImageButton[3];
+        priorityButtons[Task.PRIORITY_LOW] = (ImageButton) findViewById(R.id.low_priority);
+        priorityButtons[Task.PRIORITY_NORMAL] = (ImageButton) findViewById(R.id.normal_priority);
+        priorityButtons[Task.PRIORITY_HIGH] = (ImageButton) findViewById(R.id.high_priority);
 
         priorityButtons[Task.PRIORITY_LOW].setOnClickListener(this);
         priorityButtons[Task.PRIORITY_NORMAL].setOnClickListener(this);
         priorityButtons[Task.PRIORITY_HIGH].setOnClickListener(this);
+
+        for (int i=0; i<priorityButtons.length; i++) {
+            priorityButtons[i].setColorFilter(getResources().getColor(TaskListNewAdapter.colors[i]));
+        }
+
+
+
 
         task = ((ToDo) getApplication()).getTaskToEdit();
 
@@ -82,9 +104,11 @@ public class NewEditToDo extends ActionBarActivity implements OnClickListener {
     private void selectPriority(int priority) {
         for (int i = 0; i < priorityButtons.length; i++) {
             if (i == priority) {
-                priorityButtons[i].setChecked(true);
+                priorityButtons[i].setTag(true);
+                priorityButtons[i].setBackgroundResource(R.drawable.priority_button_bg);
             } else {
-                priorityButtons[i].setChecked(false);
+                priorityButtons[i].setTag(false);
+                priorityButtons[i].setBackgroundResource(android.R.color.transparent);
             }
         }
     }
@@ -92,7 +116,7 @@ public class NewEditToDo extends ActionBarActivity implements OnClickListener {
 
     private int getPriority() {
         for (int i = 0; i < priorityButtons.length; i++) {
-            if (priorityButtons[i].isChecked()) {
+            if ((Boolean) priorityButtons[i].getTag()) {
                 return i;
             }
         }
@@ -107,35 +131,40 @@ public class NewEditToDo extends ActionBarActivity implements OnClickListener {
     }
 
 
-    public void onClick(View v) {
-        if (v == saveButton) {
-            if (task == null) {
+    private void save() {
+        if (task == null) {
                 /*
                  * We are adding a new task
 				 */
-                if (txtName.getText().length() == 0) {
-                    displayError();
-                } else {
-                    task = new Task(-1, txtName.getText().toString(), getPriority(), false);
-
-                    ((ToDo) getApplication()).dbHelper.addTask(task);
-                    ((ToDo) getApplication()).setIsValidData(false);
-                    finish();
-                }
+            if (txtName.getText().length() == 0) {
+                displayError();
             } else {
+                task = new Task(-1, txtName.getText().toString(), getPriority(), false);
+
+                ((ToDo) getApplication()).dbHelper.addTask(task);
+                ((ToDo) getApplication()).setIsValidData(false);
+                finish();
+            }
+        } else {
 				/*
 				 * We are editing some task
 				 */
-                if (txtName.getText().length() == 0) {
-                    displayError();
-                } else {
-                    task.setName(txtName.getText().toString());
-                    task.setPriority(getPriority());
-                    ((ToDo) getApplication()).dbHelper.updateTask(task);
-                    ((ToDo) getApplication()).setIsValidData(false);
-                    finish();
-                }
+            if (txtName.getText().length() == 0) {
+                displayError();
+            } else {
+                task.setName(txtName.getText().toString());
+                task.setPriority(getPriority());
+                ((ToDo) getApplication()).dbHelper.updateTask(task);
+                ((ToDo) getApplication()).setIsValidData(false);
+                finish();
             }
+        }
+    }
+
+
+    public void onClick(View v) {
+        if (v == saveButton) {
+            save();
         } else if (v == cancelButton) {
             finish();
         } else if (v == priorityButtons[Task.PRIORITY_LOW]) {
