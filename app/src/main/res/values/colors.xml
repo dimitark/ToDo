@@ -29,8 +29,8 @@
 
     <!-- Priorities -->
     <color name="high_priority">#f40000</color>
-    <color name="normal_priority">#f48300</color>
-    <color name="low_priority">#f4ec00</color>
+    <color name="normal_priority">#ffcb6a00</color>
+    <color name="low_priority">#ffb4ac00</color>
 
     <!-- Style colors -->
     <color name="black">#000000</color>
