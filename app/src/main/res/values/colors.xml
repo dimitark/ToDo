@@ -26,4 +26,5 @@
 
     <!-- Style colors -->
     <color name="black">#000000</color>
+    <color name="light_text">#ff525252</color>
 </resources>

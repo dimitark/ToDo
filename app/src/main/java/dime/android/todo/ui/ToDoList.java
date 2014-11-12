@@ -34,6 +34,9 @@ public class ToDoList extends ActionBarActivity implements OnClickListener, Task
     /* The floating add button */
     private ImageButton addButton;
 
+    /* The empty list view */
+    private View emptyList;
+
 
     private void openPreferencesActivity() {
         Intent intent = new Intent(this, Preferences.class);
@@ -54,6 +57,9 @@ public class ToDoList extends ActionBarActivity implements OnClickListener, Task
         actionBar = getSupportActionBar();
         actionBar.setHomeButtonEnabled(true);
 
+        /* The empty list view */
+        emptyList = findViewById(R.id.empty_list);
+
         /* Set up the new Recycler view */
         recyclerView = (RecyclerView) findViewById(R.id.task_list_new);
         recyclerView.setHasFixedSize(true);
@@ -66,7 +72,19 @@ public class ToDoList extends ActionBarActivity implements OnClickListener, Task
 
         /* Set up the adapter */
         recyclerViewAdapter = new TaskListNewAdapter(toDoApp, this);
+        recyclerViewAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+            @Override
+            public void onChanged() {
+                super.onChanged();
+                if (recyclerViewAdapter.getItemCount() == 0) {
+                    emptyList.setVisibility(View.VISIBLE);
+                } else {
+                    emptyList.setVisibility(View.INVISIBLE);
+                }
+            }
+        });
         recyclerView.setAdapter(recyclerViewAdapter);
+        recyclerViewAdapter.notifyDataSetChanged();
 
         /* Set the default animator */
         recyclerView.setItemAnimator(new DefaultItemAnimator());

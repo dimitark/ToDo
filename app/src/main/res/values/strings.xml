@@ -6,6 +6,7 @@
     <string name="new_edit_todo">Add/Edit To-Do</string>
     <string name="todo">What?</string>
     <string name="name_cannot_be_empty">The name of the To-Do cannot be empty!</string>
+    <string name="empty_list">Move along, nothing to see here!</string>
 
     <!-- Widget -->
     <string name="widget_name">To-Do List</string>
