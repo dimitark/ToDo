@@ -14,7 +14,7 @@
             android:id="@+id/txt_name"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:textSize="24dip"
+            android:textSize="24sp"
             android:hint="@string/todo"
             android:singleLine="true"
             android:imeOptions="actionDone"/>
@@ -23,7 +23,7 @@
 
     <RelativeLayout
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:orientation="horizontal"
         android:paddingTop="10dp"
         android:paddingBottom="5dp"
@@ -35,54 +35,32 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content">
 
-            <RelativeLayout
+            <ImageButton
+                android:id="@+id/low_priority"
                 android:layout_width="0dp"
                 android:layout_height="50dp"
-                android:layout_weight="1">
+                android:src="@drawable/priority_icon"
+                android:scaleType="fitCenter"
+                android:background="@android:color/transparent"
+                android:layout_weight="1"/>
 
-                <ImageButton
-                    android:id="@+id/low_priority"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:src="@drawable/priority_icon"
-                    android:scaleType="fitCenter"
-                    android:background="@android:color/transparent"/>
-            </RelativeLayout>
-
-
-            <RelativeLayout
+            <ImageButton
+                android:id="@+id/normal_priority"
                 android:layout_width="0dp"
                 android:layout_height="50dp"
-                android:layout_weight="1">
+                android:src="@drawable/priority_icon"
+                android:scaleType="fitCenter"
+                android:background="@android:color/transparent"
+                android:layout_weight="1"/>
 
-                <ImageButton
-                    android:id="@+id/normal_priority"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:src="@drawable/priority_icon"
-                    android:scaleType="fitCenter"
-                    android:background="@android:color/transparent"/>
-            </RelativeLayout>
-
-
-            <RelativeLayout
+            <ImageButton
+                android:id="@+id/high_priority"
                 android:layout_width="0dp"
                 android:layout_height="50dp"
-                android:layout_weight="1">
-
-                <ImageButton
-                    android:id="@+id/high_priority"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:src="@drawable/priority_icon"
-                    android:scaleType="fitCenter"
-                    android:background="@android:color/transparent" />
-            </RelativeLayout>
-
-
-
-
-
+                android:src="@drawable/priority_icon"
+                android:scaleType="fitCenter"
+                android:background="@android:color/transparent"
+                android:layout_weight="1"/>
 
         </LinearLayout>
 

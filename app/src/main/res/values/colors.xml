@@ -9,8 +9,6 @@
     <color name="color_control_normal">#ffa7a7a7</color>
     <color name="color_control_activated">#ff757575</color>
 
-    <color name="text_color_primary">#fff</color>
-
     <!-- Main colors -->
     <color name="white">#ffffff</color>
     <color name="done">#259b24</color>
@@ -18,13 +16,7 @@
 
     <!-- Main colors -->
     <color name="dark_blue">#003753</color>
-    <color name="light_blue">#002233</color>
-    <color name="pressed_blue">#004b72</color>
-    <color name="pressed_blue_alpha">#70004b72</color>
-    <color name="very_light_blue">#489fdc</color>
 
-    <color name="gray">#c9c9c9</color>
-    <color name="gray_transparent">#70585858</color>
     <color name="transparent">#00000000</color>
 
     <!-- Priorities -->
@@ -34,6 +26,4 @@
 
     <!-- Style colors -->
     <color name="black">#000000</color>
-    <color name="grey">#ff646464</color>
-
 </resources>

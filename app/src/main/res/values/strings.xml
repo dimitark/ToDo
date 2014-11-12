@@ -2,20 +2,9 @@
 <resources>
     <string name="app_name">To-Do List</string>
 
-    <!-- ToDoList -->
-    <string name="new_task">New To-Do</string>
-    <string name="remove_completed">Remove completed</string>
-    <string name="edit_todo">Edit</string>
-    <string name="delete_todo">Delete</string>
     <string name="settings">Settings</string>
-
-    <!-- New/Edit -->
-
     <string name="new_edit_todo">Add/Edit To-Do</string>
     <string name="todo">What?</string>
-    <string name="priority">Priority:</string>
-    <string name="save">Save</string>
-    <string name="cancel">Cancel</string>
     <string name="name_cannot_be_empty">The name of the To-Do cannot be empty!</string>
 
     <!-- Widget -->
