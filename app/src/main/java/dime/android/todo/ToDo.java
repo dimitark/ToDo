@@ -53,7 +53,13 @@ public class ToDo extends Application {
         isDataValid = true;
         updateWidget();
     }
-    
+
+    public void setTaskList(List<Task> taskList) {
+        this.taskList = taskList;
+        isDataValid = true;
+        updateWidget();
+    }
+
     public void updateWidget() {
         startService(new Intent(this.getApplicationContext(), ToDoWidgetService.class));
     }

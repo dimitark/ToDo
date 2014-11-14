@@ -58,4 +58,11 @@ public class Task {
         this.completed = completed;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (o instanceof Task) {
+            return ((Task) o).id == id;
+        }
+        return super.equals(o);
+    }
 }

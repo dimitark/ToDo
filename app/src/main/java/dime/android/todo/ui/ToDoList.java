@@ -190,18 +190,6 @@ public class ToDoList extends ActionBarActivity implements OnClickListener, Task
         }
     }
 
-    private void removeCompleted() {
-        toDoApp.dbHelper.deleteCompleted();
-        refreshUI();
-    }
-
-    private void toggleCompleted(Task task) {
-        task.setCompleted(!task.isCompleted());
-        toDoApp.dbHelper.updateTask(task);
-        refreshUI();
-    }
-
-
 
     @Override
     public void onClick(int position) {
@@ -262,9 +250,9 @@ public class ToDoList extends ActionBarActivity implements OnClickListener, Task
     }
 
     private void finishRemovingTask(final TaskListNewAdapter.ViewHolder viewHolder) {
-        deleteTask(viewHolder.position);
+        deleteTask(viewHolder.getPosition());
         toDoApp.reloadFromDb();
-        recyclerViewAdapter.notifyItemRemoved(viewHolder.position);
+        recyclerViewAdapter.notifyItemRemoved(viewHolder.getPosition());
 
         // Move everything back in it's place
         viewHolder.foregroundLayer.setX(0);

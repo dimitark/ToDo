@@ -9,6 +9,8 @@ import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.util.List;
+
 import dime.android.todo.R;
 import dime.android.todo.ToDo;
 import dime.android.todo.ui.RecyclerViewSwipeToRemove;
@@ -39,7 +41,7 @@ public class TaskListNewAdapter extends RecyclerView.Adapter<TaskListNewAdapter.
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.todo_list_item, parent, false);
         v.setOnClickListener(this);
 
-        ViewHolder vh = new ViewHolder(v, position, this);
+        ViewHolder vh = new ViewHolder(v, this);
         v.setTag(vh);
         return vh;
     }
@@ -47,7 +49,6 @@ public class TaskListNewAdapter extends RecyclerView.Adapter<TaskListNewAdapter.
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, int position) {
         Task task = app.taskList.get(position);
-        viewHolder.position = position;
         viewHolder.task_name.setText(task.getName());
         viewHolder.priorityImage.setAlpha(alpha[task.getPriority()]);
         viewHolder.priorityImage.setColorFilter(viewHolder.itemView.getResources().getColor(colors[task.getPriority()]));
@@ -63,7 +64,7 @@ public class TaskListNewAdapter extends RecyclerView.Adapter<TaskListNewAdapter.
     public void onClick(View v) {
         if (clickResponder != null) {
             ViewHolder vh = (ViewHolder) v.getTag();
-            clickResponder.onClick(vh.position);
+            clickResponder.onClick(vh.getPosition());
         }
     }
 
@@ -74,7 +75,8 @@ public class TaskListNewAdapter extends RecyclerView.Adapter<TaskListNewAdapter.
         private ToDo app;
         private TaskListNewAdapter adapter;
 
-        public int position;
+        public Task task;
+
         public TextView task_name;
         public View foregroundLayer;
         public CheckBox checkBox;
@@ -84,9 +86,21 @@ public class TaskListNewAdapter extends RecyclerView.Adapter<TaskListNewAdapter.
         private CompoundButton.OnCheckedChangeListener onCheckedChangeListener = new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                checkChanged();
-                app.reloadFromDb();
-                adapter.notifyDataSetChanged();
+                // Get the task
+                Task task = app.taskList.get(getPosition());
+
+                // Change the DB record
+                checkChanged(task);
+
+                // Refresh UI
+                refreshUI();
+
+                // Get the new sorting order
+                List<Task> newOrder = app.dbHelper.getAllTasks();
+                adapter.notifyItemMoved(getPosition(), newOrder.indexOf(task));
+
+                // Reload
+                app.setTaskList(newOrder);
             }
         };
 
@@ -95,15 +109,12 @@ public class TaskListNewAdapter extends RecyclerView.Adapter<TaskListNewAdapter.
          *
          * @param itemView
          */
-        public ViewHolder(View itemView, int position, final TaskListNewAdapter adapter) {
+        public ViewHolder(View itemView, final TaskListNewAdapter adapter) {
             super(itemView);
 
             /* Get the app */
             app = (ToDo) itemView.getContext().getApplicationContext();
             this.adapter = adapter;
-
-            /* Save the position */
-            this.position = position;
 
             /* get references to the views */
             task_name = (TextView) itemView.findViewById(R.id.task_name);
@@ -116,14 +127,13 @@ public class TaskListNewAdapter extends RecyclerView.Adapter<TaskListNewAdapter.
             checkBox.setOnCheckedChangeListener(onCheckedChangeListener);
         }
 
-        public void checkChanged() {
-            Task task = app.taskList.get(position);
+        public void checkChanged(Task task) {
             task.setCompleted(checkBox.isChecked());
             app.dbHelper.updateTask(task);
         }
 
         public void refreshUI() {
-            Task task = app.taskList.get(position);
+            Task task = app.taskList.get(getPosition());
 
             checkBox.setOnCheckedChangeListener(null);
             checkBox.setChecked(task.isCompleted());
