@@ -39,7 +39,7 @@ public class TaskListNewAdapter extends RecyclerView.Adapter<TaskListNewAdapter.
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.todo_list_item, parent, false);
         v.setOnClickListener(this);
 
-        ViewHolder vh = new ViewHolder(v, position);
+        ViewHolder vh = new ViewHolder(v, position, this);
         v.setTag(vh);
         return vh;
     }
@@ -72,6 +72,7 @@ public class TaskListNewAdapter extends RecyclerView.Adapter<TaskListNewAdapter.
      */
     public static class ViewHolder extends RecyclerView.ViewHolder {
         private ToDo app;
+        private TaskListNewAdapter adapter;
 
         public int position;
         public TextView task_name;
@@ -80,16 +81,26 @@ public class TaskListNewAdapter extends RecyclerView.Adapter<TaskListNewAdapter.
         public ImageView priorityImage;
         public View doneLayer;
 
+        private CompoundButton.OnCheckedChangeListener onCheckedChangeListener = new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                checkChanged();
+                app.reloadFromDb();
+                adapter.notifyDataSetChanged();
+            }
+        };
+
         /**
          * Default constructor
          *
          * @param itemView
          */
-        public ViewHolder(View itemView, int position) {
+        public ViewHolder(View itemView, int position, final TaskListNewAdapter adapter) {
             super(itemView);
 
             /* Get the app */
             app = (ToDo) itemView.getContext().getApplicationContext();
+            this.adapter = adapter;
 
             /* Save the position */
             this.position = position;
@@ -102,14 +113,7 @@ public class TaskListNewAdapter extends RecyclerView.Adapter<TaskListNewAdapter.
             priorityImage = (ImageView) itemView.findViewById(R.id.priority_image);
             doneLayer = itemView.findViewById(R.id.done_layer);
             doneLayer.setAlpha(0.2f);
-
-            checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    checkChanged();
-                    refreshUI();
-                }
-            });
+            checkBox.setOnCheckedChangeListener(onCheckedChangeListener);
         }
 
         public void checkChanged() {
@@ -120,7 +124,11 @@ public class TaskListNewAdapter extends RecyclerView.Adapter<TaskListNewAdapter.
 
         public void refreshUI() {
             Task task = app.taskList.get(position);
+
+            checkBox.setOnCheckedChangeListener(null);
             checkBox.setChecked(task.isCompleted());
+            checkBox.setOnCheckedChangeListener(onCheckedChangeListener);
+
             doneLayer.setVisibility(task.isCompleted() ? View.VISIBLE : View.GONE);
             task_name.setAlpha(task.isCompleted() ? 0.2f : 1.0f);
             priorityImage.setAlpha(task.isCompleted() ? 0.2f : alpha[task.getPriority()]);

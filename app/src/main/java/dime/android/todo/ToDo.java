@@ -51,10 +51,10 @@ public class ToDo extends Application {
     public void reloadFromDb() {
         taskList = dbHelper.getAllTasks();
         isDataValid = true;
-
-		/*
-         * Update the widget.
-		 */
+        updateWidget();
+    }
+    
+    public void updateWidget() {
         startService(new Intent(this.getApplicationContext(), ToDoWidgetService.class));
     }
 
