@@ -190,6 +190,18 @@ public class ToDoList extends ActionBarActivity implements OnClickListener, Task
         }
     }
 
+    private void removeCompleted() {
+        toDoApp.dbHelper.deleteCompleted();
+        refreshUI();
+    }
+
+    private void toggleCompleted(Task task) {
+        task.setCompleted(!task.isCompleted());
+        toDoApp.dbHelper.updateTask(task);
+        refreshUI();
+    }
+
+
 
     @Override
     public void onClick(int position) {

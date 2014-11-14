@@ -4,6 +4,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -49,7 +51,7 @@ public class TaskListNewAdapter extends RecyclerView.Adapter<TaskListNewAdapter.
         viewHolder.task_name.setText(task.getName());
         viewHolder.priorityImage.setAlpha(alpha[task.getPriority()]);
         viewHolder.priorityImage.setColorFilter(viewHolder.itemView.getResources().getColor(colors[task.getPriority()]));
-//        viewHolder.foregroundLayer.setBackgroundResource(colors[task.getPriority()]);
+        viewHolder.refreshUI();
     }
 
     @Override
@@ -69,10 +71,14 @@ public class TaskListNewAdapter extends RecyclerView.Adapter<TaskListNewAdapter.
      * The view holder class
      */
     public static class ViewHolder extends RecyclerView.ViewHolder {
+        private ToDo app;
+
         public int position;
         public TextView task_name;
         public View foregroundLayer;
+        public CheckBox checkBox;
         public ImageView priorityImage;
+        public View doneLayer;
 
         /**
          * Default constructor
@@ -82,13 +88,42 @@ public class TaskListNewAdapter extends RecyclerView.Adapter<TaskListNewAdapter.
         public ViewHolder(View itemView, int position) {
             super(itemView);
 
+            /* Get the app */
+            app = (ToDo) itemView.getContext().getApplicationContext();
+
             /* Save the position */
             this.position = position;
 
             /* get references to the views */
             task_name = (TextView) itemView.findViewById(R.id.task_name);
+            checkBox = (CheckBox) itemView.findViewById(R.id.done_checkbox);
+            checkBox.bringToFront();
             foregroundLayer = itemView.findViewById(R.id.list_item_layout);
             priorityImage = (ImageView) itemView.findViewById(R.id.priority_image);
+            doneLayer = itemView.findViewById(R.id.done_layer);
+            doneLayer.setAlpha(0.2f);
+
+            checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    checkChanged();
+                    refreshUI();
+                }
+            });
+        }
+
+        public void checkChanged() {
+            Task task = app.taskList.get(position);
+            task.setCompleted(checkBox.isChecked());
+            app.dbHelper.updateTask(task);
+        }
+
+        public void refreshUI() {
+            Task task = app.taskList.get(position);
+            checkBox.setChecked(task.isCompleted());
+            doneLayer.setVisibility(task.isCompleted() ? View.VISIBLE : View.GONE);
+            task_name.setAlpha(task.isCompleted() ? 0.2f : 1.0f);
+            priorityImage.setAlpha(task.isCompleted() ? 0.2f : alpha[task.getPriority()]);
         }
     }
 

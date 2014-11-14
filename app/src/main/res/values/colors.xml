@@ -12,6 +12,7 @@
     <!-- Main colors -->
     <color name="white">#ffffff</color>
     <color name="done">#259b24</color>
+    <color name="remove">#ffff0000</color>
     <color name="list_clicked">#ffd1d1d1</color>
 
     <!-- Main colors -->
@@ -27,4 +28,5 @@
     <!-- Style colors -->
     <color name="black">#000000</color>
     <color name="light_text">#ff525252</color>
+    <color name="very_light_text">#ffb1b1b1</color>
 </resources>
