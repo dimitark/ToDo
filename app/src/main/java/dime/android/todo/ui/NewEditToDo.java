@@ -1,6 +1,5 @@
 package dime.android.todo.ui;
 
-import android.media.Image;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
@@ -8,13 +7,10 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.EditorInfo;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.ToggleButton;
 
 import dime.android.todo.R;
 import dime.android.todo.ToDo;
@@ -36,8 +32,10 @@ public class NewEditToDo extends ActionBarActivity implements OnClickListener {
          /* Set up the custom action bar */
         actionBar = getSupportActionBar();
         actionBar.setHomeButtonEnabled(false);
+
+        android.support.v7.app.ActionBar.LayoutParams layoutParams = new android.support.v7.app.ActionBar.LayoutParams(android.support.v7.app.ActionBar.LayoutParams.MATCH_PARENT, android.support.v7.app.ActionBar.LayoutParams.MATCH_PARENT);
         View actionBarView = getLayoutInflater().inflate(R.layout.new_edit_action_bar, null);
-        actionBar.setCustomView(actionBarView);
+        actionBar.setCustomView(actionBarView, layoutParams);
         actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
 
         // Register the click actions
