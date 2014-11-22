@@ -20,6 +20,10 @@
             colorControlHighlight, and colorSwitchThumbNormal. -->
     </style>
 
+    <style name="MyTheme.Dark" parent="Theme.AppCompat">
+
+    </style>
+
     <style name="WidgetBackground">
         <item name="android:background">@drawable/widget_background</item>
     </style>
