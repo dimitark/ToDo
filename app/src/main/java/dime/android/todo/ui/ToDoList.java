@@ -198,7 +198,7 @@ public class ToDoList extends ActionBarActivity implements OnClickListener, Task
 
     @Override
     public void swipeCanceled(View v, float deltaX) {
-        if (v == null || v.getTag() == null || deltaX > 0) return;
+        if (v == null || v.getTag() == null) return;
 
         // Get the ViewHolder
         final TaskListNewAdapter.ViewHolder viewHolder = ((TaskListNewAdapter.ViewHolder)v.getTag());
