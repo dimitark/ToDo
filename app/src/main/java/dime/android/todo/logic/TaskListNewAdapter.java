@@ -1,5 +1,6 @@
 package dime.android.todo.logic;
 
+import android.graphics.Paint;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -141,6 +142,7 @@ public class TaskListNewAdapter extends RecyclerView.Adapter<TaskListNewAdapter.
 
             doneLayer.setVisibility(task.isCompleted() ? View.VISIBLE : View.GONE);
             task_name.setAlpha(task.isCompleted() ? 0.2f : 1.0f);
+            task_name.setPaintFlags(task.isCompleted() ? task_name.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG : task_name.getPaintFlags() & ~Paint.STRIKE_THRU_TEXT_FLAG);
             priorityImage.setAlpha(task.isCompleted() ? 0.2f : alpha[task.getPriority()]);
         }
     }
