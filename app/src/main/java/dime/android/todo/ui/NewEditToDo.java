@@ -14,7 +14,6 @@ import android.widget.Toast;
 
 import dime.android.todo.R;
 import dime.android.todo.ToDo;
-import dime.android.todo.logic.Task;
 import dime.android.todo.logic.TaskListNewAdapter;
 
 public class NewEditToDo extends ActionBarActivity implements OnClickListener {
@@ -139,7 +138,7 @@ public class NewEditToDo extends ActionBarActivity implements OnClickListener {
             } else {
                 task = new Task(-1, txtName.getText().toString(), getPriority(), false);
 
-                ((ToDo) getApplication()).dbHelper.addTask(task);
+                ((ToDo) getApplication()).getDbHelper().addTask(task);
                 ((ToDo) getApplication()).setIsValidData(false);
                 finish();
             }
@@ -152,7 +151,7 @@ public class NewEditToDo extends ActionBarActivity implements OnClickListener {
             } else {
                 task.setName(txtName.getText().toString());
                 task.setPriority(getPriority());
-                ((ToDo) getApplication()).dbHelper.updateTask(task);
+                ((ToDo) getApplication()).getDbHelper().updateTask(task);
                 ((ToDo) getApplication()).setIsValidData(false);
                 finish();
             }

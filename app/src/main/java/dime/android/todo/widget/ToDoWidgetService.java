@@ -15,8 +15,6 @@ import android.widget.RemoteViews;
 import java.util.List;
 
 import dime.android.todo.R;
-import dime.android.todo.db.DatabaseHelper;
-import dime.android.todo.logic.Task;
 import dime.android.todo.ui.ToDoList;
 
 public class ToDoWidgetService extends Service {

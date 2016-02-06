@@ -19,7 +19,6 @@ import android.widget.ImageButton;
 
 import dime.android.todo.R;
 import dime.android.todo.ToDo;
-import dime.android.todo.logic.Task;
 import dime.android.todo.logic.TaskListNewAdapter;
 
 public class ToDoList extends ActionBarActivity implements OnClickListener, TaskListNewAdapter.ClickResponder, RecyclerViewSwipeToRemove.SwipeListener {
@@ -34,6 +33,9 @@ public class ToDoList extends ActionBarActivity implements OnClickListener, Task
 
     /* The floating add button */
     private ImageButton addButton;
+
+    // The main root view
+    private View rootView;
 
     /* The empty list view */
     private View emptyList;
@@ -52,6 +54,9 @@ public class ToDoList extends ActionBarActivity implements OnClickListener, Task
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.todo_list);
+
+        // Get the root view
+        rootView = findViewById(R.id.root_view);
 
         toDoApp = (ToDo) getApplication();
 
@@ -119,20 +124,20 @@ public class ToDoList extends ActionBarActivity implements OnClickListener, Task
     @Override
     public void onPause() {
         super.onPause();
-        toDoApp.dbHelper.close();
+        toDoApp.getDbHelper().close();
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        toDoApp.dbHelper.close();
+        toDoApp.getDbHelper().close();
     }
 
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        toDoApp.dbHelper.close();
+        toDoApp.getDbHelper().close();
     }
 
 
@@ -169,14 +174,17 @@ public class ToDoList extends ActionBarActivity implements OnClickListener, Task
 
 
     private void deleteTask(int position) {
-        Task task = toDoApp.taskList.get(position);
-        toDoApp.dbHelper.deleteTask(task);
+        Task task = toDoApp.getTaskList().get(position);
+        toDoApp.getDbHelper().deleteTask(task);
         refreshUI();
+
+        // Show the UNDO snack bar
+        // TODO
     }
 
 
     private void editTask(int position) {
-        Task task = toDoApp.taskList.get(position);
+        Task task = toDoApp.getTaskList().get(position);
         toDoApp.setTaskToEdit(task);
         showNewEditTodo();
     }

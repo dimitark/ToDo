@@ -49,7 +49,7 @@ public class TaskListNewAdapter extends RecyclerView.Adapter<TaskListNewAdapter.
 
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, int position) {
-        Task task = app.taskList.get(position);
+        Task task = app.getTaskList().get(position);
         viewHolder.task_name.setText(task.getName());
         viewHolder.priorityImage.setAlpha(alpha[task.getPriority()]);
         viewHolder.priorityImage.setColorFilter(viewHolder.itemView.getResources().getColor(colors[task.getPriority()]));
@@ -58,7 +58,7 @@ public class TaskListNewAdapter extends RecyclerView.Adapter<TaskListNewAdapter.
 
     @Override
     public int getItemCount() {
-        return app.taskList.size();
+        return app.getTaskList().size();
     }
 
     @Override
@@ -88,7 +88,7 @@ public class TaskListNewAdapter extends RecyclerView.Adapter<TaskListNewAdapter.
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 // Get the task
-                Task task = app.taskList.get(getPosition());
+                Task task = app.getTaskList().get(getPosition());
 
                 // Change the DB record
                 checkChanged(task);
@@ -97,7 +97,7 @@ public class TaskListNewAdapter extends RecyclerView.Adapter<TaskListNewAdapter.
                 refreshUI();
 
                 // Get the new sorting order
-                List<Task> newOrder = app.dbHelper.getAllTasks();
+                List<Task> newOrder = app.getDbHelper().getAllTasks();
                 adapter.notifyItemMoved(getPosition(), newOrder.indexOf(task));
 
                 // Reload
@@ -130,11 +130,11 @@ public class TaskListNewAdapter extends RecyclerView.Adapter<TaskListNewAdapter.
 
         public void checkChanged(Task task) {
             task.setCompleted(checkBox.isChecked());
-            app.dbHelper.updateTask(task);
+            app.getDbHelper().updateTask(task);
         }
 
         public void refreshUI() {
-            Task task = app.taskList.get(getPosition());
+            Task task = app.getTaskList().get(getPosition());
 
             checkBox.setOnCheckedChangeListener(null);
             checkBox.setChecked(task.isCompleted());
