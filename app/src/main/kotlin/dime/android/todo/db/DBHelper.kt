@@ -65,7 +65,7 @@ class DBHelper(context: Context): ManagedSQLiteOpenHelper(context, "todo.db", nu
      * @param task      -> The task that needs to be added to the database
      * @return  Boolean -> True if the adding was successful
      */
-    fun addTask(task: Task) = use { insert(table, name to task.name, priority to task.priority, completed to task.completed) } > -1
+    fun addTask(task: Task) = use { insert(table, name to task.name, priority to task.priorityInt, completed to task.completedInt) } > -1
 
     /**
      * Deletes the given task.
@@ -73,7 +73,7 @@ class DBHelper(context: Context): ManagedSQLiteOpenHelper(context, "todo.db", nu
      * @param task      -> The task that need to be removed from the database
      * @return Boolean  -> True if the removal was successful
      */
-    fun deleteTask(task: Task) = use { delete(table, "$id = {id}", "id" to task.id) } > -1
+    fun deleteTask(task: Task) = if (task.id != null) use { delete(table, "$id = {id}", "id" to task.id!!) } > -1 else false
 
     /**
      * Deletes all the completed tasks
@@ -88,12 +88,12 @@ class DBHelper(context: Context): ManagedSQLiteOpenHelper(context, "todo.db", nu
      * @param task      -> The task that needs to be updated
      * @return Boolean  -> True if the task was successfully updated
      */
-    fun updateTask(task: Task) =
+    fun updateTask(task: Task) = if (task.id != null)
             use {
-                update(table, name to task.name, priority to task.priority, completed to task.completed)
-                        .where("$id = {id}", "id" to task.id)
-                        .exec()
-            } == 1
+                update(table, name to task.name, priority to task.priorityInt, completed to task.completedInt)
+                        .where("$id = {id}", "id" to task.id!!)
+                        .exec() } == 1
+        else false
 
     /**
      * Returns a list of all tasks

@@ -5,12 +5,20 @@ package dime.android.todo.db
  *
  * Created by dime on 06/02/16.
  */
-class Task(var id: Int, var name: String, var priority: Int, var completed: Int) {
+class Task(var id: Int?, var name: String, var priorityInt: Int, var completedInt: Int) {
 
-    /**
-     * Is the task completed?
-     */
-    fun isCompleted() = completed == 1
+    // The enum representing the priority
+    enum class Priority(val integer: Int) { LOW(0), NORMAL(1), HIGH(2) }
+
+    // The priority of the task
+    var priority: Priority
+        get() = Priority.values().first { it.integer == priorityInt }
+        set(value) { priorityInt = value.integer }
+
+    // The completed flag of the task
+    var completed: Boolean
+        get() = completedInt == 1
+        set(value) { completedInt = if (value) 1 else 0 }
 
     /**
      * Equals
