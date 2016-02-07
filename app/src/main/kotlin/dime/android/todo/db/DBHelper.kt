@@ -33,7 +33,7 @@ class DBHelper(context: Context): ManagedSQLiteOpenHelper(context, "todo.db", nu
         // Returns the single instance of this object
         fun getInstance(ctx: Context) = synchronized(lock) {
             if (instance == null) instance = DBHelper(ctx.applicationContext)
-            return instance
+            instance!!
         }
      }
 
@@ -41,13 +41,11 @@ class DBHelper(context: Context): ManagedSQLiteOpenHelper(context, "todo.db", nu
      * Called on database creating. Here the tables are created
      */
     override fun onCreate(db: SQLiteDatabase) {
-        use {
-            createTable(table, true,
-                    id to INTEGER + PRIMARY_KEY + AUTOINCREMENT,
-                    name to TEXT,
-                    priority to INTEGER,
-                    completed to INTEGER)
-        }
+        db.createTable(table, true,
+                id to INTEGER + PRIMARY_KEY + AUTOINCREMENT,
+                name to TEXT,
+                priority to INTEGER,
+                completed to INTEGER)
     }
 
     /**
@@ -83,17 +81,26 @@ class DBHelper(context: Context): ManagedSQLiteOpenHelper(context, "todo.db", nu
     fun deleteCompleted() = use { delete(table, "$completed = 1") }
 
     /**
+     * Returns the Task? with the given taskId
+     *
+     * @param   taskId  -> The id of the task we want to get
+     * @return  The Task?
+     */
+    fun findTaskById(taskId: Int) = use { select(table).where("$id = {id}", "id" to taskId).exec { parseOpt(parser) } }
+
+    /**
      * Updates the given task.
      *
      * @param task      -> The task that needs to be updated
      * @return Boolean  -> True if the task was successfully updated
      */
-    fun updateTask(task: Task) = if (task.id != null)
-            use {
-                update(table, name to task.name, priority to task.priorityInt, completed to task.completedInt)
-                        .where("$id = {id}", "id" to task.id!!)
-                        .exec() } == 1
-        else false
+    fun updateTask(task: Task) =
+            if (task.id != null)
+                use {
+                    update(table, name to task.name, priority to task.priorityInt, completed to task.completedInt)
+                            .where("$id = {id}", "id" to task.id!!).exec()
+                } == 1
+            else false
 
     /**
      * Returns a list of all tasks
