@@ -90,7 +90,7 @@ class EditActivity: AppCompatActivity() {
             txtName.setSelection(it.name.length)
             selectPriority(it.priority)
             task = it
-        } ?: selectPriority(Task.Priority.LOW)
+        } ?: selectPriority(Task.Priority.NORMAL)
     }
     
     //
@@ -147,7 +147,7 @@ class EditActivity: AppCompatActivity() {
 
         // The unwrappedTask is the existing task, and we just need to update it
         unwrappedTask.name = txtName.text.toString()
-        unwrappedTask.priority = selectedPriority ?: Task.Priority.LOW
+        unwrappedTask.priority = selectedPriority ?: Task.Priority.NORMAL
         database.updateTask(unwrappedTask).doIfTrue { finishActivity() } ?: rootLayout.snack(getString(R.string.error_while_saving))
     }
 
