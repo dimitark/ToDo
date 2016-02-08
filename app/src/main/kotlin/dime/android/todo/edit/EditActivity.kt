@@ -147,9 +147,7 @@ class EditActivity: AppCompatActivity() {
         // The unwrappedTask is the existing task, and we just need to update it
         unwrappedTask.name = txtName.text.toString()
         unwrappedTask.priority = selectedPriority ?: Task.Priority.LOW
-        database.updateTask(unwrappedTask).doIfTrue {
-            finishActivity()
-        } ?: rootLayout.snack(getString(R.string.error_while_saving))
+        database.updateTask(unwrappedTask).doIfTrue { finishActivity() } ?: rootLayout.snack(getString(R.string.error_while_saving))
     }
 
     //

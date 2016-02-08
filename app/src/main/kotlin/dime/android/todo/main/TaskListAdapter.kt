@@ -95,6 +95,7 @@ class TaskListAdapter(val context: Context): RecyclerView.Adapter<TaskListAdapte
      * Refreshes the UI based on the completed property of the task
      */
     private fun refreshUIBasedOnCompleted(vh: ViewHolder, task: Task) {
+        vh.checkBox.isChecked = task.completed
         vh.doneLayer.visibility = if (task.completed) View.VISIBLE else View.GONE
         vh.taskName.alpha = if (task.completed) 0.2f else 1.0f
         vh.taskName.paintFlags = if (task.completed) vh.initialPaintFlags or Paint.STRIKE_THRU_TEXT_FLAG else vh.initialPaintFlags
