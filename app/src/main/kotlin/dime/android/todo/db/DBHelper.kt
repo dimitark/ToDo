@@ -83,10 +83,15 @@ class DBHelper(context: Context): ManagedSQLiteOpenHelper(context, "todo.db", nu
     /**
      * Adds the given task to the database.
      *
-     * @param task      -> The task that needs to be added to the database
-     * @return  Boolean -> True if the adding was successful
+     * @param   task    -> The task that needs to be added to the database
+     * @return  Task?   -> The added task if successful, null otherwise
      */
-    fun addTask(task: Task) = use { insert(table, name to task.name, priority to task.priorityInt, completed to task.completedInt) } > -1
+    fun addTask(task: Task) =
+            use {
+                insert(table, name to task.name, priority to task.priorityInt, completed to task.completedInt)
+            }.let {
+                return@let if (it == -1L) null else Task(it.toInt(), task.name, task.priorityInt, task.completedInt)
+            }
 
     /**
      * Deletes the given task.

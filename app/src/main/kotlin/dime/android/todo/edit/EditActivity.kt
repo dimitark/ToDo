@@ -136,7 +136,8 @@ class EditActivity: AppCompatActivity() {
         // Are we editing or this is a new task?
         val unwrappedTask = task ?: run {
             // We need to add the task as a new task in the database
-            database.addTask(Task(null, txtName.text.toString(), selectedPriority?.integer ?: Task.Priority.LOW.integer, 0)).doIfTrue {
+            database.addTask(Task(null, txtName.text.toString(), selectedPriority?.integer ?: Task.Priority.LOW.integer, 0))?.let {
+                // TODO set the result
                 finishActivity()
             } ?: rootLayout.snack(getString(R.string.error_while_saving))
 
