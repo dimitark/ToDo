@@ -66,6 +66,7 @@ class TaskListAdapter(val context: Context): RecyclerView.Adapter<TaskListAdapte
         val task = tasks[position]
 
         // Refresh the row
+        vh.itemView.tag = position
         vh.dataPosition = position
         vh.taskName.text = task.name
         vh.priorityImage.setColorFilter(vh.itemView.resources.getColor(priorityColors[task.priority]!!))
@@ -78,7 +79,7 @@ class TaskListAdapter(val context: Context): RecyclerView.Adapter<TaskListAdapte
     override fun onCreateViewHolder(parent: ViewGroup, position: Int): ViewHolder? {
         // Inflate the view
         val view = parent.inflate(R.layout.todo_list_item)
-        view.setOnClickListener { taskClickListener?.invoke(tasks[position].id!!) }
+        view.setOnClickListener { taskClickListener?.invoke(tasks[view.tag as Int].id!!) }
 
         // Create the view holder
         return ViewHolder(view)

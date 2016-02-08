@@ -3,9 +3,9 @@
     <string name="app_name">To-Do List</string>
 
     <string name="settings">Settings</string>
-    <string name="new_edit_todo">Add/Edit To-Do</string>
+    <string name="new_edit_todo">Add/Edit task</string>
     <string name="todo">What?</string>
-    <string name="name_cannot_be_empty">The name of the To-Do cannot be empty!</string>
+    <string name="name_cannot_be_empty">The name of the task cannot be empty!</string>
     <string name="empty_list">Move along, nothing to see here!</string>
     <string name="error_while_saving">Error while saving the data!</string>
 

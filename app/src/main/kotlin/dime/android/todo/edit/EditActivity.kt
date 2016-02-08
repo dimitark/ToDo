@@ -47,7 +47,7 @@ class EditActivity: AppCompatActivity() {
     private val priorityButtons by lazy {
         arrayOf(find<ImageButton>(R.id.low_priority), find<ImageButton>(R.id.normal_priority), find<ImageButton>(R.id.high_priority))
     }
-    private var selectedPriority = Task.Priority.LOW
+    private var selectedPriority: Task.Priority? = null
 
     // The task that is currently edited
     private var task: Task? = null
@@ -107,7 +107,7 @@ class EditActivity: AppCompatActivity() {
     private fun selectPriority(priority: Task.Priority) {
         if (selectedPriority != priority) {
             // Clear the previous selection
-            priorityButtons[priority.integer].setBackgroundResource(android.R.color.transparent)
+            selectedPriority?.let { priorityButtons[it.integer].setBackgroundResource(android.R.color.transparent) }
 
             // Set the new priority
             priorityButtons[priority.integer].setBackgroundResource(R.drawable.priority_button_bg)
@@ -134,16 +134,22 @@ class EditActivity: AppCompatActivity() {
         }
 
         // Are we editing or this is a new task?
-        if (task == null) {
-            database.addTask(Task(null, txtName.text.toString(), selectedPriority.integer, 0)).doIfTrue {
+        val unwrappedTask = task ?: run {
+            // We need to add the task as a new task in the database
+            database.addTask(Task(null, txtName.text.toString(), selectedPriority?.integer ?: Task.Priority.LOW.integer, 0)).doIfTrue {
                 finishActivity()
             } ?: rootLayout.snack(getString(R.string.error_while_saving))
-        } else {
-            // Update the existing task
-            database.updateTask(task!!).doIfTrue {
-                finishActivity()
-            } ?: rootLayout.snack(getString(R.string.error_while_saving))
+
+            // We need to return from the save() function
+            return
         }
+
+        // The unwrappedTask is the existing task, and we just need to update it
+        unwrappedTask.name = txtName.text.toString()
+        unwrappedTask.priority = selectedPriority ?: Task.Priority.LOW
+        database.updateTask(unwrappedTask).doIfTrue {
+            finishActivity()
+        } ?: rootLayout.snack(getString(R.string.error_while_saving))
     }
 
     //
