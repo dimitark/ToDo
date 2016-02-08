@@ -32,7 +32,7 @@ android {
 
     signingConfigs {
         releaseConfig {
-            storeFile file("/Users/dime/Google Drive/Coding/Android/android-release-key.keystore")
+            storeFile file("../../android-release-key.keystore")
             storePassword "dimitar"
             keyAlias "dimeandroid"
             keyPassword "dimitar"

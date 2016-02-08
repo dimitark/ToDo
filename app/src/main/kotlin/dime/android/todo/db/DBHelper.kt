@@ -8,7 +8,7 @@ import org.jetbrains.anko.db.*
  * Created by dime on 06/02/16.
  */
 
-class DBHelper(context: Context): ManagedSQLiteOpenHelper(context, "todo.db", null, 1) {
+class DBHelper(context: Context): ManagedSQLiteOpenHelper(context, "todo.db", null, 2) {
 
     // The table columns
     private val table = "todo"
@@ -38,20 +38,43 @@ class DBHelper(context: Context): ManagedSQLiteOpenHelper(context, "todo.db", nu
      }
 
     /**
-     * Called on database creating. Here the tables are created
+     * Creates the table with the given table name
      */
-    override fun onCreate(db: SQLiteDatabase) {
-        db.createTable(table, true,
-                id to INTEGER + PRIMARY_KEY + AUTOINCREMENT,
+    private fun createTable(db: SQLiteDatabase, tableName: String) {
+        db.createTable(tableName, true,
+                id to INTEGER + PRIMARY_KEY,
                 name to TEXT,
                 priority to INTEGER,
                 completed to INTEGER)
     }
 
     /**
+     * Called on database creating. Here the tables are created
+     */
+    override fun onCreate(db: SQLiteDatabase) {
+        createTable(db, table)
+    }
+
+    /**
      * Called on database upgrade.
      */
-    override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {}
+    override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
+        // If we are upgrading from 1 to 2 we need to create the new table,
+        // copy all the data and drop the old table
+        if (oldVersion != 1 || newVersion != 2) return
+
+        // The temp constants
+        val newTableName = "${table}_temp"
+        val columns = "$id, $name, $priority, $completed"
+        // Create the new table with a temp table name
+        createTable(db, newTableName)
+        // Copy all the data
+        db.execSQL("INSERT INTO $newTableName($columns) SELECT $columns FROM $table;")
+        // Drop the old table
+        db.dropTable(table)
+        // Rename the new table
+        db.execSQL("ALTER TABLE $newTableName RENAME TO $table")
+    }
 
     //
     // region Helper functions

@@ -3,7 +3,6 @@ package dime.android.todo.main
 import android.content.Context
 import android.graphics.Paint
 import android.support.v7.widget.RecyclerView
-import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckBox
@@ -12,7 +11,6 @@ import android.widget.TextView
 import dime.android.todo.R
 import dime.android.todo.db.Task
 import dime.android.todo.db.database
-import dime.android.todo.extensions.doIfTrue
 import dime.android.todo.extensions.inflate
 import org.jetbrains.anko.find
 
