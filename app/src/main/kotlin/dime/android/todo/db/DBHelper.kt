@@ -69,7 +69,7 @@ class DBHelper(context: Context): ManagedSQLiteOpenHelper(context, "todo.db", nu
         // Create the new table with a temp table name
         createTable(db, newTableName)
         // Copy all the data
-        db.execSQL("INSERT INTO $newTableName($columns) SELECT $columns FROM $table;")
+        db.execSQL("INSERT INTO $newTableName($columns) SELECT $columns FROM $table")
         // Drop the old table
         db.dropTable(table)
         // Rename the new table
