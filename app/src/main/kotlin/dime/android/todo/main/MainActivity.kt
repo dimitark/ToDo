@@ -54,9 +54,12 @@ class MainActivity: AppCompatActivity() {
 
         // Setup the adapter
         adapter.errorDelegate = { rootView.snack(it) }
-        adapter.taskClickListener = {
-            startActivityForResult<EditActivity>(EditActivity.REQUEST_CODE, EditActivity.EXTRA_TASK_ID to it)
+        adapter.taskClickListener = { startActivityForResult<EditActivity>(EditActivity.REQUEST_CODE, EditActivity.EXTRA_TASK_ID to it) }
+        adapter.dataChangedListener = {
+            emptyList.visibility = if (adapter.itemCount == 0) View.VISIBLE else View.INVISIBLE
+            app.updateWidget()
         }
+        adapter.refreshDataFromDB()
 
         // Setup the Recycler view
         recyclerView.setHasFixedSize(true)
@@ -69,10 +72,7 @@ class MainActivity: AppCompatActivity() {
         addButton.setOnClickListener { startActivityForResult<EditActivity>(EditActivity.REQUEST_CODE) }
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.menu, menu)
-        return true
-    }
+    override fun onCreateOptionsMenu(menu: Menu) = consume { menuInflater.inflate(R.menu.menu, menu) }
 
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
         R.id.settings -> consume { startActivityForResult<Preferences>(Preferences.REQUEST_CODE) }
@@ -81,6 +81,7 @@ class MainActivity: AppCompatActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == EditActivity.REQUEST_CODE && resultCode == RESULT_OK) {
+            // Refresh the list
             adapter.refreshDataFromDB()
         }
     }

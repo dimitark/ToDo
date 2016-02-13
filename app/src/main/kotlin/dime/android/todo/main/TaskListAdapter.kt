@@ -13,6 +13,7 @@ import dime.android.todo.db.Task
 import dime.android.todo.db.database
 import dime.android.todo.extensions.inflate
 import org.jetbrains.anko.find
+import kotlin.properties.Delegates
 
 /**
  * Created by dime on 06/02/16.
@@ -31,29 +32,27 @@ class TaskListAdapter(val context: Context): RecyclerView.Adapter<TaskListAdapte
     // The alpha values of the priorities
     val priorityAlphas = mapOf(Task.Priority.LOW to 0.25f, Task.Priority.NORMAL to 0.5f, Task.Priority.HIGH to 1f)
 
-    // The items
-    val tasks = mutableListOf<Task>()
-
     // The task click listener
     var taskClickListener: ((id: Int) -> Unit)? = null
+
+    // The data changed listener
+    var dataChangedListener: (() -> Unit)? = null
 
     // The error delegate (called when there is an error)
     var errorDelegate: ((message: String) -> Unit)? = null
 
-    /**
-     * The init block
-     */
-    init {
-        tasks.addAll(context.database.allTasks())
+    // The items
+    var tasks by Delegates.observable(listOf<Task>()) { prop, old, new ->
+        // Just notify self when the data changes
+        notifyDataSetChanged()
+        dataChangedListener?.invoke()
     }
 
     /**
      * Refreshed the data from the database
      */
     fun refreshDataFromDB() {
-        tasks.clear()
-        tasks.addAll(context.database.allTasks())
-        notifyDataSetChanged()
+        tasks = context.database.allTasks()
     }
 
     /**
@@ -64,8 +63,6 @@ class TaskListAdapter(val context: Context): RecyclerView.Adapter<TaskListAdapte
         val task = tasks[position]
 
         // Refresh the row
-        vh.itemView.tag = position
-        vh.dataPosition = position
         vh.taskName.text = task.name
         vh.priorityImage.setColorFilter(vh.itemView.resources.getColor(priorityColors[task.priority]!!))
         refreshUIBasedOnCompleted(vh, task)
@@ -77,7 +74,7 @@ class TaskListAdapter(val context: Context): RecyclerView.Adapter<TaskListAdapte
     override fun onCreateViewHolder(parent: ViewGroup, position: Int): ViewHolder? {
         // Inflate the view
         val view = parent.inflate(R.layout.todo_list_item)
-        view.setOnClickListener { taskClickListener?.invoke(tasks[view.tag as Int].id!!) }
+        view.setOnClickListener { taskClickListener?.invoke(tasks[(view.tag as ViewHolder).adapterPosition].id!!) }
 
         // Create the view holder
         return ViewHolder(view)
@@ -111,20 +108,23 @@ class TaskListAdapter(val context: Context): RecyclerView.Adapter<TaskListAdapte
         val doneLayer by lazy { view.find<View>(R.id.done_layer) }
 
         val initialPaintFlags: Int
-        var dataPosition = 0
 
         init {
+            // Save myself as the itemView's tag
+            itemView.tag = this
+
             // Setup the UI
             taskName; foregroundLayer; priorityImage
             checkBox.bringToFront()
             doneLayer.alpha = 0.2f
             initialPaintFlags = taskName.paintFlags
             checkBox.setOnCheckedChangeListener { compoundButton, isChecked ->
-                val task = tasks[dataPosition]
+                val task = tasks[adapterPosition]
                 task.completed = isChecked
 
                 if (context.database.updateTask(task)) {
                     refreshUIBasedOnCompleted(this, task)
+                    dataChangedListener?.invoke()
                 } else {
                     compoundButton.isChecked = !isChecked
                     task.completed = !isChecked

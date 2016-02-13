@@ -17,7 +17,7 @@ class DBHelper(context: Context): ManagedSQLiteOpenHelper(context, "todo.db", nu
     private val priority = "priority"
     private val completed = "completed"
     
-    // Out custom parser
+    // Our custom parser
     private val parser = rowParser { id: Int, name: String, priority: Int, completed: Int -> Task(id, name, priority, completed) }
 
     /**

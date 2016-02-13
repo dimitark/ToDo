@@ -39,6 +39,7 @@ inline fun consume(f: () -> Unit): Boolean {
  */
 inline fun <R> Boolean.doIfTrue(f: (Boolean) -> R): R? = if (this) f(this) else null
 
+
 /**
  * Adds the snack() extension function to the View, that displays a snack on that view
  */
@@ -61,4 +62,13 @@ inline fun ViewGroup.snack(message: String, length: Int = Snackbar.LENGTH_LONG, 
 fun Snackbar.action(action: String, color: Int? = null, listener: (View) -> Unit) {
     setAction(action, listener)
     color?.let { setActionTextColor(color) }
+}
+
+/**
+ * Swaps the elements at the given indexes
+ */
+fun <T> MutableList<T>.swap(firstIndex: Int, secondIndex: Int) {
+    val temp = this[firstIndex]
+    this[firstIndex] = this[secondIndex]
+    this[secondIndex] = temp
 }

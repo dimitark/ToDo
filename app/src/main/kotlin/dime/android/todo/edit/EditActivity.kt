@@ -1,6 +1,7 @@
 package dime.android.todo.edit
 
 import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.ActionBar
 import android.support.v7.app.ActionBar.LayoutParams
@@ -128,17 +129,19 @@ class EditActivity: AppCompatActivity() {
         }
 
         // Finishes this activity and sends an OK result
-        fun finishActivity() {
-            setResult(RESULT_OK)
+        fun finishActivity(task: Task) {
+            // Send back the id of the updated/added task
+            val intent = Intent()
+            intent.putExtra(EXTRA_TASK_ID, task.id)
+            setResult(RESULT_OK, intent)
             finish()
         }
 
         // Are we editing or this is a new task?
         val unwrappedTask = task ?: run {
             // We need to add the task as a new task in the database
-            database.addTask(Task(null, txtName.text.toString(), selectedPriority?.integer ?: Task.Priority.LOW.integer, 0))?.let {
-                // TODO set the result
-                finishActivity()
+            database.addTask(Task(null, txtName.text.toString(), selectedPriority?.integer ?: Task.Priority.NORMAL.integer, 0))?.let {
+                finishActivity(it)
             } ?: rootLayout.snack(getString(R.string.error_while_saving))
 
             // We need to return from the save() function
@@ -148,7 +151,7 @@ class EditActivity: AppCompatActivity() {
         // The unwrappedTask is the existing task, and we just need to update it
         unwrappedTask.name = txtName.text.toString()
         unwrappedTask.priority = selectedPriority ?: Task.Priority.NORMAL
-        database.updateTask(unwrappedTask).doIfTrue { finishActivity() } ?: rootLayout.snack(getString(R.string.error_while_saving))
+        database.updateTask(unwrappedTask).doIfTrue { finishActivity(unwrappedTask) } ?: rootLayout.snack(getString(R.string.error_while_saving))
     }
 
     //
