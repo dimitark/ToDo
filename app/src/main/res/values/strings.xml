@@ -10,6 +10,10 @@
     <string name="error_while_saving">Error while saving the data!</string>
     <string name="error_while_updating">Error while updating the data!</string>
 
+    <string name="deleted_one_task">Deleted one task</string>
+    <string name="deleted_more_tasks">Deleted %d tasks</string>
+    <string name="undo">UNDO</string>
+
     <!-- Widget -->
     <string name="widget_name">To-Do List</string>
     <string name="widget">Widget</string>

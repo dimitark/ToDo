@@ -50,10 +50,22 @@ inline fun ViewGroup.snack(message: String, length: Int = Snackbar.LENGTH_LONG) 
 /**
  * Adds the snack() extension function to the View, that displays a snack on that view
  */
-inline fun ViewGroup.snack(message: String, length: Int = Snackbar.LENGTH_LONG, f: Snackbar.() -> Unit) {
+inline fun ViewGroup.snack(message: String, length: Int = Snackbar.LENGTH_LONG, f: Snackbar.() -> Unit): Snackbar {
     val snack = Snackbar.make(this, message, length)
     snack.f()
     snack.show()
+    return snack
+}
+
+/**
+ * Adds the snack() extension function to the View, that displays a snack on that view
+ */
+inline fun ViewGroup.snack(message: String, length: Int = Snackbar.LENGTH_LONG, callback: Snackbar.Callback? = null, f: Snackbar.() -> Unit): Snackbar {
+    val snack = Snackbar.make(this, message, length)
+    snack.setCallback(callback)
+    snack.f()
+    snack.show()
+    return snack
 }
 
 /**

@@ -11,6 +11,7 @@ import android.widget.TextView
 import dime.android.todo.R
 import dime.android.todo.db.Task
 import dime.android.todo.db.database
+import dime.android.todo.extensions.doIfTrue
 import dime.android.todo.extensions.inflate
 import org.jetbrains.anko.find
 import kotlin.properties.Delegates
@@ -42,7 +43,7 @@ class TaskListAdapter(val context: Context): RecyclerView.Adapter<TaskListAdapte
     var errorDelegate: ((message: String) -> Unit)? = null
 
     // The items
-    var tasks by Delegates.observable(listOf<Task>()) { prop, old, new ->
+    var tasks by Delegates.observable(mutableListOf<Task>()) { prop, old, new ->
         // Just notify self when the data changes
         notifyDataSetChanged()
         dataChangedListener?.invoke()
@@ -52,8 +53,26 @@ class TaskListAdapter(val context: Context): RecyclerView.Adapter<TaskListAdapte
      * Refreshed the data from the database
      */
     fun refreshDataFromDB() {
-        tasks = context.database.allTasks()
+        tasks = context.database.allTasks().toMutableList()
     }
+
+    /**
+     * Removes the task at the given position.
+     *
+     * @return  The removed task. If the removal wasn't successful - returns null
+     */
+    fun removeTaskAtPosition(position: Int): Task? {
+        tasks.getOrNull(position)?.let {
+            if (context.database.deleteTask(it)) {
+                tasks.removeAt(position)
+                notifyDataSetChanged()
+                dataChangedListener?.invoke()
+                return it
+            }
+        }
+        return null
+    }
+
 
     /**
      * Called when an item (row) needs to be updated
