@@ -43,14 +43,14 @@ inline fun <R> Boolean.doIfTrue(f: (Boolean) -> R): R? = if (this) f(this) else 
 /**
  * Adds the snack() extension function to the View, that displays a snack on that view
  */
-inline fun ViewGroup.snack(message: String, length: Int = Snackbar.LENGTH_LONG) {
+inline fun View.snack(message: String, length: Int = Snackbar.LENGTH_LONG) {
     Snackbar.make(this, message, length).show()
 }
 
 /**
  * Adds the snack() extension function to the View, that displays a snack on that view
  */
-inline fun ViewGroup.snack(message: String, length: Int = Snackbar.LENGTH_LONG, f: Snackbar.() -> Unit): Snackbar {
+inline fun View.snack(message: String, length: Int = Snackbar.LENGTH_LONG, f: Snackbar.() -> Unit): Snackbar {
     val snack = Snackbar.make(this, message, length)
     snack.f()
     snack.show()
@@ -60,7 +60,7 @@ inline fun ViewGroup.snack(message: String, length: Int = Snackbar.LENGTH_LONG, 
 /**
  * Adds the snack() extension function to the View, that displays a snack on that view
  */
-inline fun ViewGroup.snack(message: String, length: Int = Snackbar.LENGTH_LONG, callback: Snackbar.Callback? = null, f: Snackbar.() -> Unit): Snackbar {
+inline fun View.snack(message: String, length: Int = Snackbar.LENGTH_LONG, callback: Snackbar.Callback? = null, f: Snackbar.() -> Unit): Snackbar {
     val snack = Snackbar.make(this, message, length)
     snack.setCallback(callback)
     snack.f()

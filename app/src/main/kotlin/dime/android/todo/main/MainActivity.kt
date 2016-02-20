@@ -3,18 +3,17 @@ package dime.android.todo.main
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import android.support.design.widget.FloatingActionButton
 import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AccelerateInterpolator
 import android.view.animation.BounceInterpolator
-import android.widget.ImageButton
 import android.widget.TextView
 import dime.android.todo.App
 import dime.android.todo.R
@@ -41,7 +40,7 @@ class MainActivity: AppCompatActivity(), SwipeListener {
     private val app by lazy { application as App }
     private val rootView by lazy { find<ViewGroup>(R.id.root_view) }
     private val emptyList by lazy { find<View>(R.id.empty_list) }
-    private val addButton by lazy { find<ImageButton>(R.id.new_todo) }
+    private val addButton by lazy { find<FloatingActionButton>(R.id.new_todo) }
     private val recyclerView by lazy { find<RecyclerView>(R.id.task_list_new) }
 
     private val adapter by lazy { TaskListAdapter(this) }
