@@ -50,16 +50,6 @@ inline fun View.snack(message: String, length: Int = Snackbar.LENGTH_LONG) {
 /**
  * Adds the snack() extension function to the View, that displays a snack on that view
  */
-inline fun View.snack(message: String, length: Int = Snackbar.LENGTH_LONG, f: Snackbar.() -> Unit): Snackbar {
-    val snack = Snackbar.make(this, message, length)
-    snack.f()
-    snack.show()
-    return snack
-}
-
-/**
- * Adds the snack() extension function to the View, that displays a snack on that view
- */
 inline fun View.snack(message: String, length: Int = Snackbar.LENGTH_LONG, callback: Snackbar.Callback? = null, f: Snackbar.() -> Unit): Snackbar {
     val snack = Snackbar.make(this, message, length)
     snack.setCallback(callback)
@@ -76,11 +66,11 @@ fun Snackbar.action(action: String, color: Int? = null, listener: (View) -> Unit
     color?.let { setActionTextColor(color) }
 }
 
+
 /**
- * Swaps the elements at the given indexes
+ * Moves the element from the 'fromPosition' to the 'toPosition'
  */
-fun <T> MutableList<T>.swap(firstIndex: Int, secondIndex: Int) {
-    val temp = this[firstIndex]
-    this[firstIndex] = this[secondIndex]
-    this[secondIndex] = temp
+fun <T> MutableList<T>.move(fromPosition: Int, toPosition: Int) {
+    val removed = removeAt(fromPosition);
+    add(toPosition, removed)
 }

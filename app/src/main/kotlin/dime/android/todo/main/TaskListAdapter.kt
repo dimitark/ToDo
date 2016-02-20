@@ -13,6 +13,7 @@ import dime.android.todo.db.Task
 import dime.android.todo.db.database
 import dime.android.todo.extensions.doIfTrue
 import dime.android.todo.extensions.inflate
+import dime.android.todo.extensions.move
 import org.jetbrains.anko.find
 import kotlin.properties.Delegates
 
@@ -41,6 +42,10 @@ class TaskListAdapter(val context: Context): RecyclerView.Adapter<TaskListAdapte
 
     // The error delegate (called when there is an error)
     var errorDelegate: ((message: String) -> Unit)? = null
+
+    // A flag indicating that we are currently in the onBind method
+    // Helps prevent circular method call (checkboxCheck -> notifyMoved -> onBind -> checkboxCheck ->...)
+    var onBind = false
 
     // The items
     var tasks by Delegates.observable(mutableListOf<Task>()) { prop, old, new ->
@@ -84,7 +89,9 @@ class TaskListAdapter(val context: Context): RecyclerView.Adapter<TaskListAdapte
         // Refresh the row
         vh.taskName.text = task.name
         vh.priorityImage.setColorFilter(vh.itemView.resources.getColor(priorityColors[task.priority]!!))
+        onBind = true
         refreshUIBasedOnCompleted(vh, task)
+        onBind = false
     }
 
     /**
@@ -138,11 +145,20 @@ class TaskListAdapter(val context: Context): RecyclerView.Adapter<TaskListAdapte
             doneLayer.alpha = 0.2f
             initialPaintFlags = taskName.paintFlags
             checkBox.setOnCheckedChangeListener { compoundButton, isChecked ->
+                if (onBind) return@setOnCheckedChangeListener
+
                 val task = tasks[adapterPosition]
                 task.completed = isChecked
 
                 if (context.database.updateTask(task)) {
                     refreshUIBasedOnCompleted(this, task)
+
+                    // Move the [un]checked task
+                    val freshNewTasks = context.database.allTasks()
+                    val newPosition = freshNewTasks.indexOf(task)
+                    tasks.move(adapterPosition, newPosition)
+                    notifyItemMoved(adapterPosition, newPosition)
+
                     dataChangedListener?.invoke()
                 } else {
                     compoundButton.isChecked = !isChecked
