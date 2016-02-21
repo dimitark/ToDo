@@ -6,6 +6,8 @@
         android:largeScreens="true"
         android:anyDensity="true" />
 
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:name="App"
         android:icon="@drawable/icon"
@@ -46,5 +48,8 @@
         <!-- Service to perform web API queries -->
         <service android:name=".widget.ToDoWidgetService" />
 
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="9b8eee1b4851f3cced2d012f0659cf2316ad9476" />
     </application>
 </manifest>
