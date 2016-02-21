@@ -4,7 +4,7 @@ import android.support.v7.widget.RecyclerView
 import android.view.MotionEvent
 import android.view.View
 
-/**
+/** 
  * Created by dime on 14/02/16.
  */
 class RecyclerViewSwipeToRemove(private val swipeListener: SwipeListener) : RecyclerView.OnItemTouchListener {
@@ -86,6 +86,8 @@ class RecyclerViewSwipeToRemove(private val swipeListener: SwipeListener) : Recy
     }
 
     override fun onTouchEvent(recyclerView: RecyclerView, event: MotionEvent) {
+        childView ?: return
+
         val deltaX = downX - event.x
         when (event.action) {
             MotionEvent.ACTION_MOVE -> swipeListener.swipeInProgress(childView!!, deltaX)
