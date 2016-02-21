@@ -4,7 +4,7 @@ import android.support.v7.widget.RecyclerView
 import android.view.MotionEvent
 import android.view.View
 
-/**
+/** 
  * Created by dime on 14/02/16.
  */
 class RecyclerViewSwipeToRemove(private val swipeListener: SwipeListener) : RecyclerView.OnItemTouchListener {
