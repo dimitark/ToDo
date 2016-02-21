@@ -25,7 +25,7 @@
     <RelativeLayout
         android:id="@+id/list_item_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="60dp"
         android:background="@drawable/todo_list_states"
         android:layout_alignParentLeft="true"
         android:gravity="center">

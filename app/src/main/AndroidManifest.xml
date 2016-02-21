@@ -1,20 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android" package="dime.android.todo">
 
-    <supports-screens
-        android:smallScreens="true"
+    <supports-screens android:smallScreens="true"
         android:normalScreens="true"
         android:largeScreens="true"
         android:anyDensity="true" />
 
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
-        android:name="ToDo"
+        android:name="App"
         android:icon="@drawable/icon"
         android:allowBackup="true"
         android:label="@string/app_name"
         android:theme="@style/MyTheme">
         <activity
-            android:name=".ui.ToDoList"
+            android:name=".main.MainActivity"
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -23,16 +24,14 @@
         </activity>
 
         <activity
-            android:name=".ui.Preferences"
-            android:theme="@style/MyTheme"
-            android:parentActivityName=".ui.ToDoList"></activity>
+            android:name=".preferences.Preferences"
+            android:parentActivityName=".main.MainActivity"></activity>
 
         <activity
-            android:name=".ui.NewEditToDo"
+            android:name=".edit.EditActivity"
             android:label="@string/new_edit_todo"
-            android:theme="@style/MyTheme"
             android:windowSoftInputMode="stateVisible|adjustResize"
-            android:parentActivityName=".ui.ToDoList" />
+            android:parentActivityName=".main.MainActivity" />
 
         <!-- Broadcast Receiver that will process AppWidget updates -->
         <receiver
@@ -49,5 +48,8 @@
         <!-- Service to perform web API queries -->
         <service android:name=".widget.ToDoWidgetService" />
 
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="9b8eee1b4851f3cced2d012f0659cf2316ad9476" />
     </application>
 </manifest>

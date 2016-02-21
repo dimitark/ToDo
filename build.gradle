@@ -4,12 +4,13 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:0.13.2'
+        classpath 'com.android.tools.build:gradle:2.0.0-beta5'
     }
 }
 
 allprojects {
     repositories {
         jcenter()
+        maven { url 'https://maven.fabric.io/public' }
     }
 }
