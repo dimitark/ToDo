@@ -86,6 +86,8 @@ class RecyclerViewSwipeToRemove(private val swipeListener: SwipeListener) : Recy
     }
 
     override fun onTouchEvent(recyclerView: RecyclerView, event: MotionEvent) {
+        childView ?: return
+
         val deltaX = downX - event.x
         when (event.action) {
             MotionEvent.ACTION_MOVE -> swipeListener.swipeInProgress(childView!!, deltaX)
