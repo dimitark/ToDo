@@ -8,8 +8,6 @@ import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.view.Menu
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AccelerateInterpolator
@@ -21,9 +19,7 @@ import dime.android.todo.db.Task
 import dime.android.todo.db.database
 import dime.android.todo.edit.EditActivity
 import dime.android.todo.extensions.action
-import dime.android.todo.extensions.consume
 import dime.android.todo.extensions.snack
-import dime.android.todo.preferences.Preferences
 import org.jetbrains.anko.find
 import org.jetbrains.anko.startActivityForResult
 
@@ -97,13 +93,6 @@ class MainActivity: AppCompatActivity(), SwipeListener {
 
         // Setup the other UI components
         addButton.setOnClickListener { startActivityForResult<EditActivity>(EditActivity.REQUEST_CODE) }
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu) = consume { menuInflater.inflate(R.menu.menu, menu) }
-
-    override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
-        R.id.settings -> consume { startActivityForResult<Preferences>(Preferences.REQUEST_CODE) }
-        else -> super.onOptionsItemSelected(item)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
