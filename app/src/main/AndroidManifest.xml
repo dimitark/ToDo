@@ -46,7 +46,9 @@
         </receiver>
 
         <!-- Service to perform web API queries -->
-        <service android:name=".widget.ToDoWidgetService" />
+        <service
+            android:name=".widget.ToDoWidgetService"
+            android:permission="android.permission.BIND_REMOTEVIEWS"/>
 
         <meta-data
             android:name="io.fabric.ApiKey"
