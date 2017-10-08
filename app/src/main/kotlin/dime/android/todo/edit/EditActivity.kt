@@ -16,6 +16,7 @@ import dime.android.todo.db.database
 import dime.android.todo.extensions.doIfTrue
 import dime.android.todo.extensions.snack
 import dime.android.todo.main.TaskListAdapter
+import org.jetbrains.anko.appcompat.v7.linearLayoutCompat
 import org.jetbrains.anko.find
 
 /**

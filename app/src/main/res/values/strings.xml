@@ -9,6 +9,7 @@
     <string name="empty_list">Move along, nothing to see here!</string>
     <string name="error_while_saving">Error while saving the data!</string>
     <string name="error_while_updating">Error while updating the data!</string>
+    <string name="empty_widget">No tasks for you</string>
 
     <string name="deleted_one_task">Deleted one task</string>
     <string name="deleted_more_tasks">Deleted %d tasks</string>

@@ -138,7 +138,7 @@ class DBHelper(context: Context): ManagedSQLiteOpenHelper(context, "todo.db", nu
     /**
      * Returns a list of all uncompleted tasks
      */
-    fun uncompletedTask() = use { select(table).where("$completed = 0").orderBy(priority, SqlOrderDirection.DESC).exec { parseList(parser) } }
+    fun uncompletedTasks() = use { select(table).where("$completed = 0").orderBy(priority, SqlOrderDirection.DESC).exec { parseList(parser) } }
 
     //
     // endregion Helper functions
