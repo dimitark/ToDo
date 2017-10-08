@@ -1,6 +1,6 @@
 buildscript {
 
-    ext.kotlin_version = '1.0.5'
+    ext.kotlin_version = '1.1.51'
 
     repositories {
         mavenCentral()
@@ -9,12 +9,13 @@ buildscript {
 
     dependencies {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-        classpath 'io.fabric.tools:gradle:1.+'
+        classpath 'io.fabric.tools:gradle:1.24.2'
     }
 }
 
 repositories {
     jcenter()
+    maven { url "https://maven.google.com" }
 }
 
 apply plugin: 'com.android.application'
@@ -22,13 +23,13 @@ apply plugin: 'kotlin-android'
 apply plugin: 'io.fabric'
 
 android {
-    compileSdkVersion 24
-    buildToolsVersion '23.0.3'
+    compileSdkVersion 26
+    buildToolsVersion '26.0.2'
 
     defaultConfig {
         applicationId "dime.android.todo"
         minSdkVersion 16
-        targetSdkVersion 24
+        targetSdkVersion 26
         versionCode 15
         versionName "1.0.0"
     }
@@ -57,9 +58,9 @@ android {
 
 
 dependencies {
-    compile 'com.android.support:appcompat-v7:23.1.0'
-    compile 'com.android.support:recyclerview-v7:23.1.0'
-    compile 'com.android.support:design:23.1.0'
+    compile 'com.android.support:appcompat-v7:26.1.0'
+    compile 'com.android.support:recyclerview-v7:26.1.0'
+    compile 'com.android.support:design:26.1.0'
     compile 'org.jetbrains.anko:anko-appcompat-v7:0.8.2'
     compile 'org.jetbrains.anko:anko-sqlite:0.8.2'
     compile('com.crashlytics.sdk.android:crashlytics:2.5.5@aar') {

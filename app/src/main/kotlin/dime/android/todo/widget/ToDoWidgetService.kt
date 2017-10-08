@@ -34,14 +34,9 @@ class ToDoWidgetViewsFactory(val context: Context): RemoteViewsService.RemoteVie
     }
 
     override fun getCount() = tasks.size
-
     override fun getViewTypeCount() = 1
-
     override fun onDestroy() {}
-
     override fun hasStableIds() = true
-
     override fun getLoadingView() = null
-
     override fun getItemId(position: Int) = position.toLong()
 }
